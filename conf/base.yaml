@@ -1,0 +1,378 @@
+elasticsearch:
+    host: localhost
+    port: 9200
+    log: warning
+surveys:
+    - id: stateofjs
+      releases:
+          - id: '2016'
+            typeform_id: Mulmxw
+            transformers: []
+            sections:
+                - id: JAVASCRIPT_FLAVORS
+                  title: JavaScript Flavor
+                - id: FRONTEND_FRAMEWORKS
+                  title: Front-End
+                  freeform: Other Front-End Frameworks
+                - id: STATE_MANAGEMENT
+                  title: State Management
+                  freeform: Other State Management Libraries
+                - id: DATA_LAYER
+                  title: API Layer
+                  freeform: Other API layer solutions
+                - id: BACKEND_FRAMEWORKS
+                  title: Stacks
+                  freeform: Other stacks
+                - id: TESTING
+                  title: Testing
+                  freeform: Other testing frameworks
+                - id: CSS
+                  title: CSS
+                  freeform: Other CSS solutions
+                - id: BUILD_TOOLS
+                  title: Build Tools
+                  freeform: Other build tools
+                - id: MOBILE_DESKTOP
+                  title: Mobile
+                  freeform: Other mobile apps solutions
+          - id: '2017'
+            typeform_id: S5iLk9
+            transformers: []
+          - id: '2018'
+            typeform_id: J9gRJf
+            transformers: []
+    - id: stateofcss
+      releases:
+          - id: '2019'
+            typeform_id: TxDuh6
+            transformers:
+                - type: normalize_typeform
+                - type: cleanup
+                - type: user_info
+                  config:
+                      fields:
+                          - email
+                          - company_size
+                          - yearly_salary
+                - type: geo
+                  config:
+                      fields:
+                          - country
+                - type: to_object
+            sections:
+                - id: FEATURES
+                - id: TOOLS
+                - id: ENVIRONMENTS
+                - id: RESOURCES
+                - id: OPINIONS
+                - id: USER_INFO
+            aggregations:
+                - section: new-demographics
+                  items:
+                      - id: by_country
+                        type: terms
+                        field: aboutyou_yourcountry
+                        size: 300
+                      - id: by_city
+                        type: terms
+                        field: aboutyou_yourcity
+                        size: 300
+                      - id: gender_breakdown
+                        type: terms
+                        field: aboutyou_yourgender
+                      - id: salary
+                        type: terms
+                        field: aboutyou_yearlysalary
+                      - id: company_size
+                        type: terms
+                        field: aboutyou_companysize
+                      - id: years_of_experience
+                        type: terms
+                        field: aboutyou_yearsofexperience
+                - section: layout
+                  dest: features_usage
+                  items:
+                      - id: css-grid
+                        type: terms
+                        field: layout_cssgrid
+                      - id: flexbox
+                        type: terms
+                        field: layout_flexbox
+                      - id: css-multi-column
+                        type: terms
+                        field: layout_cssmulticolumn
+                      - id: css-writing-modes
+                        type: terms
+                        field: layout_csswritingmodes
+                      - id: css-exclusions
+                        type: terms
+                        field: layout_cssexclusions
+                - section: shapes-and-graphics
+                  dest: features_usage
+                  items:
+                      - id: css-shapes
+                        type: terms
+                        field: shapes_graphics_cssshapes
+                      - id: object-fit
+                        type: terms
+                        field: shapes_graphics_objectfit
+                      - id: clip-path
+                        type: terms
+                        field: shapes_graphics_clippath
+                      - id: css-masks
+                        type: terms
+                        field: shapes_graphics_cssmasks
+                      - id: blend-modes
+                        type: terms
+                        field: shapes_graphics_blendmodes
+                      - id: css-filter-effects
+                        type: terms
+                        field: shapes_graphics_cssfiltereffects
+                - section: interactions
+                  dest: features_usage
+                  items:
+                      - id: css-scroll-snap
+                        type: terms
+                        field: interactions_cssscrollsnap
+                      - id: overscroll-behavior
+                        type: terms
+                        field: interactions_overscrollbehavior
+                      - id: overflow-anchor
+                        type: terms
+                        field: interactions_overflowanchor
+                - section: typography
+                  dest: features_usage
+                  items:
+                      - id: web-fonts-font-face
+                        type: terms
+                        field: typography_webfonts_fontface
+                      - id: variable-fonts
+                        type: terms
+                        field: typography_variablefonts
+                      - id: line-breaking-properties
+                        type: terms
+                        field: typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens
+                      - id: font-variant
+                        type: terms
+                        field: typography_fontvariant
+                      - id: initial-letter
+                        type: terms
+                        field: typography_initialletter
+                - section: animations-and-transforms
+                  dest: features_usage
+                  items:
+                    - id: css-transitions
+                      type: terms
+                      field: animations_transforms_csstransitions
+                    - id: css-transforms
+                      type: terms
+                      field: animations_transforms_csstransforms
+                    - id: css-animations
+                      type: terms
+                      field: animations_transforms_cssanimations
+                - section: other-features
+                  dest: features_usage
+                  items:
+                    - id: css-variables
+                      type: terms
+                      field: otherfeatures_cssvariables
+                    - id: support-queries
+                      type: terms
+                      field: otherfeatures_featuresupportqueries_supports
+                    - id: css-containment
+                      type: terms
+                      field: otherfeatures_csscontainment
+                    - id: will-change
+                      type: terms
+                      field: otherfeatures_willchange
+                    - id: calc
+                      type: terms
+                      field: otherfeatures_calc
+                - section: units-and-selectors
+                  dest: units-and-selectors
+                  items:
+                    - id: units
+                      type: terms
+                      field: units_selectors_units
+                    - id: pseudo-elements
+                      type: terms
+                      field: units_selectors_pseudoelements
+                    - id: combinators
+                      type: terms
+                      field: units_selectors_combinators
+                    - id: tree-document-structure
+                      type: terms
+                      field: units_selectors_tree_documentstructure
+                    - id: attributes
+                      type: terms
+                      field: units_selectors_attributes
+                    - id: links-urls
+                      type: terms
+                      field: units_selectors_links_urls
+                    - id: interaction
+                      type: terms
+                      field: units_selectors_interaction
+                    - id: form-controls
+                      type: terms
+                      field: units_selectors_formcontrols
+                - section: pre-post-processors
+                  dest: tools
+                  items:
+                    - id: sass
+                      type: terms
+                      field: pre_postprocessors_sass
+                    - id: less
+                      type: terms
+                      field: pre_postprocessors_less
+                    - id: postcss
+                      type: terms
+                      field: pre_postprocessors_postcss
+                    - id: stylus
+                      type: terms
+                      field: pre_postprocessors_stylus
+                    - id: other
+                      type: terms
+                      field: pre_postprocessors_other_other
+                - section: css-frameworks
+                  dest: tools
+                  items:
+                    - id: bootstrap
+                      type: terms
+                      field: cssframeworks_bootstrap
+                    - id: materialize-css
+                      type: terms
+                      field: cssframeworks_materializecss
+                    - id: ant-design
+                      type: terms
+                      field: cssframeworks_antdesign
+                    - id: semantic-ui
+                      type: terms
+                      field: cssframeworks_semanticui
+                    - id: bulma
+                      type: terms
+                      field: cssframeworks_bulma
+                    - id: foundation
+                      type: terms
+                      field: cssframeworks_foundation
+                    - id: uikit
+                      type: terms
+                      field: cssframeworks_uikit
+                    - id: tachyons
+                      type: terms
+                      field: cssframeworks_tachyons
+                    - id: primer
+                      type: terms
+                      field: cssframeworks_primer
+                    - id: tailwind
+                      type: terms
+                      field: cssframeworks_tailwind
+                    - id: purecss
+                      type: terms
+                      field: cssframeworks_purecss
+                - section: methodologies
+                  dest: tools
+                  items:
+                    - id: bem
+                      type: terms
+                      field: methodologies_bem
+                    - id: atomic-css
+                      type: terms
+                      field: methodologies_atomiccss
+                    - id: oocss
+                      type: terms
+                      field: methodologies_oocss
+                    - id: smacss
+                      type: terms
+                      field: methodologies_smacss
+                    - id: it-css
+                      type: terms
+                      field: methodologies_itcss
+                - section: css-in-js
+                  dest: tools
+                  items:
+                    - id: styled-components
+                      type: terms
+                      field: cssinjs_styledcomponents
+                    - id: glamor
+                      type: terms
+                      field: cssinjs_glamor
+                    - id: aphrodite
+                      type: terms
+                      field: cssinjs_aphrodite
+                    - id: jss
+                      type: terms
+                      field: cssinjs_jss
+                    - id: styled-jsx
+                      type: terms
+                      field: cssinjs_styledjsx
+                    - id: radium
+                      type: terms
+                      field: cssinjs_radium
+                    - id: emotion
+                      type: terms
+                      field: cssinjs_emotion
+                    - id: css-modules
+                      type: terms
+                      field: cssinjs_cssmodules
+                - section: environments
+                  dest: environments
+                  items:
+                    - id: browsers
+                      type: terms
+                      field: environments_browsers
+                    - id: form-factors
+                      type: terms
+                      field: environments_formfactors
+                    # "environments_cssforprint": {
+                    # "environments_cssforemailclients": {
+                - section: resources
+                  dest: learning-resources
+                  items:
+                    - id: blogs-magazines
+                      type: terms
+                      field: resources_blogs_magazines
+                    - id: sites-courses
+                      type: terms
+                      field: resources_sites_courses
+                    - id: podcasts
+                      type: terms
+                      field: resources_podcasts
+                - section: other-tools
+                  dest: other-tools
+                  items:
+                    - id: text-editors
+                      type: terms
+                      field: othertools_texteditors
+                    - id: browsers
+                      type: terms
+                      field: othertools_browsers
+                - section: opinions
+                  dest: opinions
+                  items:
+                    - id: easy-to-learn
+                      type: terms
+                      field: opinionquestions_cssiseasytolearn
+                      isNumber: true
+                    - id: evolving-too-slowly
+                      type: terms
+                      field: opinionquestions_cssisevolvingtooslowly
+                      isNumber: true
+                    - id: utility-classes
+                      type: terms
+                      field: opinionquestions_utility_nonsemantic_classes_center_largetext_etc_shouldbeavoided
+                      isNumber: true
+                    - id: selector-nesting
+                      type: terms
+                      field: opinionquestions_selectornesting_foo_barulli_shouldbeavoided
+                      isNumber: true
+                    - id: programming-language
+                      type: terms
+                      field: opinionquestions_cssisaprogramminglanguage
+                      isNumber: true
+                    - id: enjoy-css
+                      type: terms
+                      field: opinionquestions_ienjoywritingcss
+                      isNumber: true
+                    - id: missing-features
+                      type: terms
+                      field: opinionquestions_whatdoyoufeeliscurrentlymissingfromcss

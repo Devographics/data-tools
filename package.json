@@ -1,0 +1,42 @@
+{
+  "name": "@stateof/data-tools",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Raphaël Benitte <raphael.benitte@ekino.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@ekino/config": "git+https://github.com/ekino/node-config.git#c315b9d44476e0ca71c711202ed2c4870b10b011",
+    "@ekino/logger": "git+https://github.com/ekino/node-logger.git#3b470fab9de160c098665f3aceab220fff5a4711",
+    "commander": "^2.19.0",
+    "dotenv": "^6.2.0",
+    "elasticsearch": "^15.4.1",
+    "js-yaml": "^3.12.1",
+    "lodash": "^4.17.11",
+    "node-fetch": "^2.3.0",
+    "ora": "^3.1.0",
+    "table": "^5.2.3"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/dotenv": "^6.1.0",
+    "@types/elasticsearch": "^5.0.31",
+    "@types/jest": "^24.0.6",
+    "@types/js-yaml": "^3.12.0",
+    "@types/lodash": "^4.14.121",
+    "@types/node": "^11.9.4",
+    "@types/node-fetch": "^2.1.6",
+    "@types/ora": "^3.0.0",
+    "@types/table": "^4.0.5",
+    "jest": "^24.1.0",
+    "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3"
+  },
+  "scripts": {
+    "build": "tsc --diagnostics --pretty",
+    "build:watch": "tsc --watch --pretty",
+    "build:config": "tsc --showConfig",
+    "fmt": "prettier --color --write README.md \"{src,tests}/**/*.{js,ts,yml}\" tsconfig.json \"conf/*.yaml\""
+  }
+}
