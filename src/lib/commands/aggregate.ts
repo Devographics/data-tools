@@ -26,11 +26,18 @@ export const createAggregateCommand = (program: Command, logger: Logger) => {
                 const aggs = await runAggregations(survey, release, releaseConfig.aggregations)
 
                 for (const section of aggs) {
-                    const sectionConfig: any = releaseConfig.aggregations.find(({ section: id }) => id === section.section_id)
+                    const sectionConfig: any = releaseConfig.aggregations.find(
+                        ({ section: id }) => id === section.section_id
+                    )
 
                     const fileContent = `${fileHeader}${safeDump(section)}`
 
-                    await writeFile(`../state-of-js/surveys/stateofcss/2019/src/data/results/${sectionConfig.dest ? `${sectionConfig.dest}/` : ''}${section.section_id}.yml`, fileContent)
+                    await writeFile(
+                        `../state-of-css-2019/src/data/results/${
+                            sectionConfig.dest ? `${sectionConfig.dest}/` : ''
+                        }${section.section_id}.yml`,
+                        fileContent
+                    )
                 }
             } catch (error) {
                 logger.error(`an error occurred while aggregating survey results`, { error })

@@ -1,7 +1,18 @@
+###############################################################################
+#
+#  Elastic config
+#
+###############################################################################
 elasticsearch:
     host: localhost
     port: 9200
     log: warning
+
+###############################################################################
+#
+#  Surveys config
+#
+###############################################################################
 surveys:
     - id: stateofjs
       releases:
@@ -58,6 +69,75 @@ surveys:
                   config:
                       fields:
                           - country
+                - type: dict_mapper
+                  config:
+                      dict: years_of_experience
+                      fields:
+                          - aboutyou_yearsofexperience
+                - type: dict_mapper
+                  config:
+                      dict: usage
+                      fields:
+                          - layout_cssgrid
+                          - layout_flexbox
+                          - layout_cssmulticolumn
+                          - layout_csswritingmodes
+                          - layout_cssexclusions
+                          - shapes_graphics_cssshapes
+                          - shapes_graphics_objectfit
+                          - shapes_graphics_clippath
+                          - shapes_graphics_cssmasks
+                          - shapes_graphics_blendmodes
+                          - shapes_graphics_cssfiltereffects
+                          - interactions_cssscrollsnap
+                          - interactions_overscrollbehavior
+                          - interactions_overflowanchor
+                          - typography_webfonts_fontface
+                          - typography_variablefonts
+                          - typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens
+                          - typography_fontvariant
+                          - typography_initialletter
+                          - animations_transforms_csstransitions
+                          - animations_transforms_csstransforms
+                          - animations_transforms_cssanimations
+                          - otherfeatures_cssvariables
+                          - otherfeatures_featuresupportqueries_supports
+                          - otherfeatures_csscontainment
+                          - otherfeatures_willchange
+                          - otherfeatures_calc
+                - type: dict_mapper
+                  config:
+                      dict: opinion
+                      fields:
+                          - pre_postprocessors_sass
+                          - pre_postprocessors_less
+                          - pre_postprocessors_postcss
+                          - pre_postprocessors_stylus
+                          - pre_postprocessors_other_other
+                          - cssframeworks_bootstrap
+                          - cssframeworks_materializecss
+                          - cssframeworks_antdesign
+                          - cssframeworks_semanticui
+                          - cssframeworks_bulma
+                          - cssframeworks_foundation
+                          - cssframeworks_uikit
+                          - cssframeworks_tachyons
+                          - cssframeworks_primer
+                          - cssframeworks_tailwind
+                          - cssframeworks_purecss
+                          - methodologies_bem
+                          - methodologies_atomiccss
+                          - methodologies_oocss
+                          - methodologies_smacss
+                          - methodologies_itcss
+                          - cssinjs_styledcomponents
+                          - cssinjs_glamor
+                          - cssinjs_aphrodite
+                          - cssinjs_jss
+                          - cssinjs_styledjsx
+                          - cssinjs_radium
+                          - cssinjs_emotion
+                          - cssinjs_cssmodules
                 - type: to_object
             sections:
                 - id: FEATURES
@@ -93,286 +173,647 @@ surveys:
                   dest: features_usage
                   items:
                       - id: css-grid
-                        type: terms
-                        field: layout_cssgrid
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: layout_cssgrid
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        layout_cssgrid.value.keyword: used_it
                       - id: flexbox
-                        type: terms
-                        field: layout_flexbox
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: layout_flexbox
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        layout_flexbox.value.keyword: used_it
                       - id: css-multi-column
-                        type: terms
-                        field: layout_cssmulticolumn
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: layout_cssmulticolumn
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        layout_cssmulticolumn.value.keyword: used_it
                       - id: css-writing-modes
-                        type: terms
-                        field: layout_csswritingmodes
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: layout_csswritingmodes
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        layout_csswritingmodes.value.keyword: used_it
                       - id: css-exclusions
-                        type: terms
-                        field: layout_cssexclusions
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: layout_cssexclusions
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        layout_cssexclusions.value.keyword: used_it
+
                 - section: shapes-and-graphics
                   dest: features_usage
                   items:
                       - id: css-shapes
-                        type: terms
-                        field: shapes_graphics_cssshapes
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: shapes_graphics_cssshapes
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        shapes_graphics_cssshapes.value.keyword: used_it
                       - id: object-fit
-                        type: terms
-                        field: shapes_graphics_objectfit
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: shapes_graphics_objectfit
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        shapes_graphics_objectfit.value.keyword: used_it
                       - id: clip-path
-                        type: terms
-                        field: shapes_graphics_clippath
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: shapes_graphics_clippath
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        shapes_graphics_clippath.value.keyword: used_it
                       - id: css-masks
-                        type: terms
-                        field: shapes_graphics_cssmasks
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: shapes_graphics_cssmasks
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        shapes_graphics_cssmasks.value.keyword: used_it
                       - id: blend-modes
-                        type: terms
-                        field: shapes_graphics_blendmodes
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: shapes_graphics_blendmodes
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        shapes_graphics_blendmodes.value.keyword: used_it
+
                       - id: css-filter-effects
-                        type: terms
-                        field: shapes_graphics_cssfiltereffects
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: shapes_graphics_cssfiltereffects
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        shapes_graphics_cssfiltereffects.value.keyword: used_it
                 - section: interactions
                   dest: features_usage
                   items:
                       - id: css-scroll-snap
-                        type: terms
-                        field: interactions_cssscrollsnap
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: interactions_cssscrollsnap
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        interactions_cssscrollsnap.value.keyword: used_it
                       - id: overscroll-behavior
-                        type: terms
-                        field: interactions_overscrollbehavior
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: interactions_overscrollbehavior
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        interactions_overscrollbehavior.value.keyword: used_it
                       - id: overflow-anchor
-                        type: terms
-                        field: interactions_overflowanchor
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: interactions_overflowanchor
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        interactions_overflowanchor.value.keyword: used_it
                 - section: typography
                   dest: features_usage
                   items:
                       - id: web-fonts-font-face
-                        type: terms
-                        field: typography_webfonts_fontface
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: typography_webfonts_fontface
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        typography_webfonts_fontface.value.keyword: used_it
                       - id: variable-fonts
-                        type: terms
-                        field: typography_variablefonts
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: typography_variablefonts
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        typography_variablefonts.value.keyword: used_it
                       - id: line-breaking-properties
-                        type: terms
-                        field: typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens.value.keyword: used_it
                       - id: font-variant
-                        type: terms
-                        field: typography_fontvariant
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: typography_fontvariant
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        typography_fontvariant.value.keyword: used_it
                       - id: initial-letter
-                        type: terms
-                        field: typography_initialletter
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: typography_initialletter
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        typography_initialletter.value.keyword: used_it
                 - section: animations-and-transforms
                   dest: features_usage
                   items:
-                    - id: css-transitions
-                      type: terms
-                      field: animations_transforms_csstransitions
-                    - id: css-transforms
-                      type: terms
-                      field: animations_transforms_csstransforms
-                    - id: css-animations
-                      type: terms
-                      field: animations_transforms_cssanimations
+                      - id: css-transitions
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: animations_transforms_csstransitions
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        animations_transforms_csstransitions.value.keyword: used_it
+                      - id: css-transforms
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: animations_transforms_csstransforms
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        animations_transforms_csstransforms.value.keyword: used_it
+                      - id: css-animations
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: animations_transforms_cssanimations
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        animations_transforms_cssanimations.value.keyword: used_it
                 - section: other-features
                   dest: features_usage
                   items:
-                    - id: css-variables
-                      type: terms
-                      field: otherfeatures_cssvariables
-                    - id: support-queries
-                      type: terms
-                      field: otherfeatures_featuresupportqueries_supports
-                    - id: css-containment
-                      type: terms
-                      field: otherfeatures_csscontainment
-                    - id: will-change
-                      type: terms
-                      field: otherfeatures_willchange
-                    - id: calc
-                      type: terms
-                      field: otherfeatures_calc
+                      - id: css-variables
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: otherfeatures_cssvariables
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        otherfeatures_cssvariables.value.keyword: used_it
+                      - id: support-queries
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: otherfeatures_featuresupportqueries_supports
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        otherfeatures_featuresupportqueries_supports.value.keyword: used_it
+                      - id: css-containment
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: otherfeatures_csscontainment
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        otherfeatures_csscontainment.value.keyword: used_it
+                      - id: will-change
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: otherfeatures_willchange
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        otherfeatures_willchange.value.keyword: used_it
+                      - id: calc
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: otherfeatures_calc
+                            usageByExperience:
+                                type: terms_sub_filter
+                                field: aboutyou_yearsofexperience
+                                filter:
+                                    term:
+                                        otherfeatures_calc.value.keyword: used_it
                 - section: units-and-selectors
                   dest: units-and-selectors
                   items:
-                    - id: units
-                      type: terms
-                      field: units_selectors_units
-                    - id: pseudo-elements
-                      type: terms
-                      field: units_selectors_pseudoelements
-                    - id: combinators
-                      type: terms
-                      field: units_selectors_combinators
-                    - id: tree-document-structure
-                      type: terms
-                      field: units_selectors_tree_documentstructure
-                    - id: attributes
-                      type: terms
-                      field: units_selectors_attributes
-                    - id: links-urls
-                      type: terms
-                      field: units_selectors_links_urls
-                    - id: interaction
-                      type: terms
-                      field: units_selectors_interaction
-                    - id: form-controls
-                      type: terms
-                      field: units_selectors_formcontrols
+                      - id: units
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_units
+                      - id: pseudo-elements
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_pseudoelements
+                      - id: combinators
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_combinators
+                      - id: tree-document-structure
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_tree_documentstructure
+                      - id: attributes
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_attributes
+                      - id: links-urls
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_links_urls
+                      - id: interaction
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_interaction
+                      - id: form-controls
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: units_selectors_formcontrols
                 - section: pre-post-processors
                   dest: tools
                   items:
-                    - id: sass
-                      type: terms
-                      field: pre_postprocessors_sass
-                    - id: less
-                      type: terms
-                      field: pre_postprocessors_less
-                    - id: postcss
-                      type: terms
-                      field: pre_postprocessors_postcss
-                    - id: stylus
-                      type: terms
-                      field: pre_postprocessors_stylus
-                    - id: other
-                      type: terms
-                      field: pre_postprocessors_other_other
+                      - id: sass
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: pre_postprocessors_sass
+                      - id: less
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: pre_postprocessors_less
+                      - id: postcss
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: pre_postprocessors_postcss
+                      - id: stylus
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: pre_postprocessors_stylus
+                      - id: other
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: pre_postprocessors_other_other
                 - section: css-frameworks
                   dest: tools
                   items:
-                    - id: bootstrap
-                      type: terms
-                      field: cssframeworks_bootstrap
-                    - id: materialize-css
-                      type: terms
-                      field: cssframeworks_materializecss
-                    - id: ant-design
-                      type: terms
-                      field: cssframeworks_antdesign
-                    - id: semantic-ui
-                      type: terms
-                      field: cssframeworks_semanticui
-                    - id: bulma
-                      type: terms
-                      field: cssframeworks_bulma
-                    - id: foundation
-                      type: terms
-                      field: cssframeworks_foundation
-                    - id: uikit
-                      type: terms
-                      field: cssframeworks_uikit
-                    - id: tachyons
-                      type: terms
-                      field: cssframeworks_tachyons
-                    - id: primer
-                      type: terms
-                      field: cssframeworks_primer
-                    - id: tailwind
-                      type: terms
-                      field: cssframeworks_tailwind
-                    - id: purecss
-                      type: terms
-                      field: cssframeworks_purecss
+                      - id: bootstrap
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_bootstrap
+                      - id: materialize-css
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_materializecss
+                      - id: ant-design
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_antdesign
+                      - id: semantic-ui
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_semanticui
+                      - id: bulma
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_bulma
+                      - id: foundation
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_foundation
+                      - id: uikit
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_uikit
+                      - id: tachyons
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_tachyons
+                      - id: primer
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_primer
+                      - id: tailwind
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_tailwind
+                      - id: purecss
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssframeworks_purecss
                 - section: methodologies
                   dest: tools
                   items:
-                    - id: bem
-                      type: terms
-                      field: methodologies_bem
-                    - id: atomic-css
-                      type: terms
-                      field: methodologies_atomiccss
-                    - id: oocss
-                      type: terms
-                      field: methodologies_oocss
-                    - id: smacss
-                      type: terms
-                      field: methodologies_smacss
-                    - id: it-css
-                      type: terms
-                      field: methodologies_itcss
+                      - id: bem
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: methodologies_bem
+                      - id: atomic-css
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: methodologies_atomiccss
+                      - id: oocss
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: methodologies_oocss
+                      - id: smacss
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: methodologies_smacss
+                      - id: it-css
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: methodologies_itcss
                 - section: css-in-js
                   dest: tools
                   items:
-                    - id: styled-components
-                      type: terms
-                      field: cssinjs_styledcomponents
-                    - id: glamor
-                      type: terms
-                      field: cssinjs_glamor
-                    - id: aphrodite
-                      type: terms
-                      field: cssinjs_aphrodite
-                    - id: jss
-                      type: terms
-                      field: cssinjs_jss
-                    - id: styled-jsx
-                      type: terms
-                      field: cssinjs_styledjsx
-                    - id: radium
-                      type: terms
-                      field: cssinjs_radium
-                    - id: emotion
-                      type: terms
-                      field: cssinjs_emotion
-                    - id: css-modules
-                      type: terms
-                      field: cssinjs_cssmodules
-                - section: environments
-                  dest: environments
-                  items:
-                    - id: browsers
-                      type: terms
-                      field: environments_browsers
-                    - id: form-factors
-                      type: terms
-                      field: environments_formfactors
-                    # "environments_cssforprint": {
-                    # "environments_cssforemailclients": {
-                - section: resources
-                  dest: learning-resources
-                  items:
-                    - id: blogs-magazines
-                      type: terms
-                      field: resources_blogs_magazines
-                    - id: sites-courses
-                      type: terms
-                      field: resources_sites_courses
-                    - id: podcasts
-                      type: terms
-                      field: resources_podcasts
+                      - id: styled-components
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_styledcomponents
+                      - id: glamor
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_glamor
+                      - id: aphrodite
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_aphrodite
+                      - id: jss
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_jss
+                      - id: styled-jsx
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_styledjsx
+                      - id: radium
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_radium
+                      - id: emotion
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_emotion
+                      - id: css-modules
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: cssinjs_cssmodules
                 - section: other-tools
                   dest: other-tools
                   items:
-                    - id: text-editors
-                      type: terms
-                      field: othertools_texteditors
-                    - id: browsers
-                      type: terms
-                      field: othertools_browsers
+                      - id: text-editors
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: othertools_texteditors
+                      - id: browsers
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: othertools_browsers
+                - section: environments
+                  dest: environments
+                  items:
+                      - id: browsers
+                        aggregations:
+                            environments:
+                                type: terms
+                                field: environments_browsers
+                      - id: form-factors
+                        aggregations:
+                            environments:
+                                type: terms
+                                field: environments_formfactors
+                      # "environments_cssforprint": {
+                      # "environments_cssforemailclients": {
+                - section: resources
+                  dest: learning-resources
+                  items:
+                      - id: blogs-magazines
+                        aggregations:
+                            resources:
+                                type: terms
+                                field: resources_blogs_magazines
+                      - id: sites-courses
+                        aggregations:
+                            resources:
+                                type: terms
+                                field: resources_sites_courses
+                      - id: podcasts
+                        aggregations:
+                            resources:
+                                type: terms
+                                field: resources_podcasts
                 - section: opinions
                   dest: opinions
                   items:
-                    - id: easy-to-learn
-                      type: terms
-                      field: opinionquestions_cssiseasytolearn
-                      isNumber: true
-                    - id: evolving-too-slowly
-                      type: terms
-                      field: opinionquestions_cssisevolvingtooslowly
-                      isNumber: true
-                    - id: utility-classes
-                      type: terms
-                      field: opinionquestions_utility_nonsemantic_classes_center_largetext_etc_shouldbeavoided
-                      isNumber: true
-                    - id: selector-nesting
-                      type: terms
-                      field: opinionquestions_selectornesting_foo_barulli_shouldbeavoided
-                      isNumber: true
-                    - id: programming-language
-                      type: terms
-                      field: opinionquestions_cssisaprogramminglanguage
-                      isNumber: true
-                    - id: enjoy-css
-                      type: terms
-                      field: opinionquestions_ienjoywritingcss
-                      isNumber: true
-                    - id: missing-features
-                      type: terms
-                      field: opinionquestions_whatdoyoufeeliscurrentlymissingfromcss
+                      - id: easy-to-learn
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: opinionquestions_cssiseasytolearn
+                                isNumber: true
+                      - id: evolving-too-slowly
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: opinionquestions_cssisevolvingtooslowly
+                                isNumber: true
+                      - id: utility-classes
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: opinionquestions_utility_nonsemantic_classes_center_largetext_etc_shouldbeavoided
+                                isNumber: true
+                      - id: selector-nesting
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: opinionquestions_selectornesting_foo_barulli_shouldbeavoided
+                                isNumber: true
+                      - id: programming-language
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: opinionquestions_cssisaprogramminglanguage
+                                isNumber: true
+                      - id: enjoy-css
+                        aggregations:
+                            opinion:
+                                type: terms
+                                field: opinionquestions_ienjoywritingcss
+                                isNumber: true
+                      - id: missing-features
+                        aggregations:
+                            features:
+                                type: terms
+                                field: opinionquestions_whatdoyoufeeliscurrentlymissingfromcss
+
+###############################################################################
+#
+#  Dictionaries
+#  mostly used to map answers labels to ids.
+#
+###############################################################################
+dictionaries:
+    years_of_experience:
+        - id: less-than-1
+          label: Less than one year
+        - id: 1-2
+          label: 1-2 years
+        - id: 2-5
+          label: 2-5 years
+        - id: 5-10
+          label: 5-10 years
+        - id: 10-20
+          label: 10-20 years
+        - id: more-than-20
+          label: 20+ years
+
+    usage:
+        - id: used_it
+          label: 👍 I've used it
+        - id: know_not_used
+          label: ✅ Know what it is, but haven't used it
+        - id: never_heard_not_sure
+          label: 🤷 Never heard of it/Not sure what it is
+
+    opinion:
+        - id: would_use
+          label: 👍 Used it > Would use again
+        - id: would_not_use
+          label: 👎 Used it > Would avoid
+        - id: interested
+          label: ✅ Heard of it > Would like to learn
+        - id: not_interested
+          label: 🚫 Heard of it > Not interested
+        - id: never_heard
+          label: 🤷 Never heard of it/Not sure what it is

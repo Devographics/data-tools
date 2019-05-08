@@ -37,6 +37,6 @@
     "build": "tsc --diagnostics --pretty",
     "build:watch": "tsc --watch --pretty",
     "build:config": "tsc --showConfig",
-    "fmt": "prettier --color --write README.md \"{src,tests}/**/*.{js,ts,yml}\" tsconfig.json \"conf/*.yaml\""
+    "fmt": "prettier --color --write README.md \"{src,tests,conf}/**/*.{js,ts,yml}\" tsconfig.json \"conf/*.yaml\""
   }
 }

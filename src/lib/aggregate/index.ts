@@ -1,101 +1,39 @@
-import { createClient } from '../load/elasticsearc_loader'
-import { computeBucketsPercentages } from './utils'
+import { TermsAggregationConfig, runTermsAggregation } from './terms_aggregation'
+import {
+    TermsSubFilterAggregationConfig,
+    runTermsSubFilterAggregation
+} from './terms_sub_filter_aggregation'
 
-export interface TermsAggregationConfig {
-    type: 'terms'
+export type AggregationConfig = TermsAggregationConfig | TermsSubFilterAggregationConfig
+
+export interface SectionItemConfig {
     id: string
-    field: string
-    size?: number
-    isNumber?: boolean
+    aggregations: {
+        [id: string]: AggregationConfig
+    }
 }
-
-export type AggregationConfig = TermsAggregationConfig
 
 export interface SectionAggregationsConfig {
     section: string
-    items: TermsAggregationConfig[]
+    items: SectionItemConfig[]
 }
 
-export interface RawBucket {
-    key: string
-    doc_count: number
-}
-
-export interface Bucket {
-    id: string
-    count: number
-    percentage: number
-}
-
-export interface RawAggregation {
-    doc_count_error_upper_bound: number
-    sum_other_doc_count: number
-    buckets: RawBucket[]
-}
-
-export const mapAggregation = (agg: RawAggregation, total: number) => {
-    const mapped = {
-        total,
-        others_count: agg.sum_other_doc_count as number,
-        buckets: agg.buckets.map((bucket: any) => ({
-            id: `${bucket.key}`,
-            count: bucket.doc_count
-        }))
-    }
-
-    return mapped
-}
-
-export const runTermsAggregation = async (
-    survey: string,
-    release: string,
-    config: TermsAggregationConfig
-) => {
-    console.log(`> running term aggregation for field: ${config.field}`)
-    const client = createClient()
-
-    const field = `${config.field}.value${config.isNumber ? '' : '.keyword'}`
-
-    const params = {
-        index: survey,
-        size: 0,
-        body: {
-            query: {
-                bool: {
-                    must: [
-                        {
-                            term: {
-                                'releaseId.keyword': release
-                            }
-                        },
-                        {
-                            exists: { field }
-                        }
-                    ]
-                }
-            },
-            aggs: {
-                [config.id]: {
-                    terms: {
-                        field,
-                        size: config.size || 20
-                    }
-                }
-            }
+const appendAgg = (all: any[], agg: AggregationConfig, res: any) => {
+    if (agg.key !== undefined) {
+        const existingAgg = all.find(i => i.id === agg.id)
+        if (existingAgg !== undefined) {
+            existingAgg[agg.key] = res
+        } else {
+            all.push({
+                id: agg.id,
+                [agg.key]: res
+            })
         }
-    }
-    const res = await client.client.search(params)
-
-    if (res.aggregations[config.id].doc_count_error_upper_bound > 0) {
-        // console.error('aggregation contains errors', res.aggregations[config.id])
-        // throw new Error('aggregation contains errors')
-    }
-
-    const mappedAggregation = mapAggregation(res.aggregations[config.id], res.hits.total)
-
-    return {
-        ...mappedAggregation,
-        buckets: computeBucketsPercentages(mappedAggregation.buckets, mappedAggregation.total)
+    } else {
+        all.push({
+            id: agg.id,
+            ...res
+        })
     }
 }
 
@@ -106,20 +44,31 @@ export const runAggregations = async (
 ) => {
     const aggs: any[] = []
     for (const section of sections) {
-        const sectionAggs: any[] = []
+        const sectionItems: any[] = []
         console.log(`computing aggregations for section ${section.section}`)
-        for (const agg of section.items) {
-            if (agg.type === 'terms') {
-                const res = await runTermsAggregation(survey, release, agg)
-                sectionAggs.push({
-                    id: agg.id,
-                    ...res,
-                })
+        for (const item of section.items) {
+            const itemAggregations: any = {
+                id: item.id
             }
+
+            for (const aggId in item.aggregations) {
+                const agg = item.aggregations[aggId]
+
+                let res
+                if (agg.type === 'terms') {
+                    res = await runTermsAggregation(survey, release, agg)
+                } else if (agg.type === 'terms_sub_filter') {
+                    res = await runTermsSubFilterAggregation(survey, release, agg)
+                }
+
+                itemAggregations[aggId] = res
+            }
+
+            sectionItems.push(itemAggregations)
         }
         aggs.push({
             section_id: section.section,
-            aggregations: sectionAggs
+            aggregations: sectionItems
         })
     }
 
