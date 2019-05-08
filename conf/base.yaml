@@ -227,7 +227,6 @@ surveys:
                                 filter:
                                     term:
                                         layout_cssexclusions.value.keyword: used_it
-
                 - section: shapes-and-graphics
                   dest: features_usage
                   items:
@@ -552,9 +551,9 @@ surveys:
                             opinion:
                                 type: terms
                                 field: pre_postprocessors_stylus
-                      - id: other
+                      - id: other-pre-post-processors
                         aggregations:
-                            opinion:
+                            others:
                                 type: terms
                                 field: pre_postprocessors_other_other
                 - section: css-frameworks
@@ -615,6 +614,11 @@ surveys:
                             opinion:
                                 type: terms
                                 field: cssframeworks_purecss
+                      - id: other-css-frameworks
+                        aggregations:
+                            others:
+                                type: terms
+                                field: cssframeworks_other_other
                 - section: methodologies
                   dest: tools
                   items:
@@ -643,6 +647,11 @@ surveys:
                             opinion:
                                 type: terms
                                 field: methodologies_itcss
+                      - id: other-methodologies
+                        aggregations:
+                            others:
+                                type: terms
+                                field: methodologies_other_other
                 - section: css-in-js
                   dest: tools
                   items:
@@ -686,6 +695,11 @@ surveys:
                             opinion:
                                 type: terms
                                 field: cssinjs_cssmodules
+                      - id: other-css-in-js
+                        aggregations:
+                            others:
+                                type: terms
+                                field: cssinjs_other_other
                 - section: other-tools
                   dest: other-tools
                   items:
@@ -780,7 +794,7 @@ surveys:
 ###############################################################################
 #
 #  Dictionaries
-#  mostly used to map answers labels to ids.
+#  used to map answers labels to ids.
 #
 ###############################################################################
 dictionaries:
