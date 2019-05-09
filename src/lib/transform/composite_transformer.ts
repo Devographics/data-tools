@@ -1,10 +1,11 @@
 import { Transformer } from './index'
+import { createNormalizeTypeFormTransformer } from './normalize_typeform_transformer'
 import { createUserInfoTransformer } from './user_info_transformer'
 import { createGeoTransformer } from './geo_transformer'
 import { createCleanupTransformer } from './cleanup_transformer'
-import { createNormalizeTypeFormTransformer } from './normalize_typeform_transformer'
+import { createDictMapperTransformer, DictMapperConfig } from './dict_mapper_transformer'
+import { createNormalizeTransformer, NormalizeConfig } from './normalize_transformer'
 import { createToObjectTransformer } from './to_object_transformer'
-import { createDictMapperTransformer } from './dict_mapper_transformer'
 
 export type TransformerType =
     | 'user_info'
@@ -13,6 +14,11 @@ export type TransformerType =
     | 'normalize_typeform'
     | 'to_object'
     | 'dict_mapper'
+    | 'normalize'
+
+export type TransformerConfig =
+    | DictMapperConfig
+    | NormalizeConfig
 
 const transformerByType = (type: TransformerType, config?: any): Transformer => {
     if (type === 'user_info') {
@@ -27,11 +33,14 @@ const transformerByType = (type: TransformerType, config?: any): Transformer => 
     if (type === 'normalize_typeform') {
         return createNormalizeTypeFormTransformer(config)
     }
-    if (type === 'to_object') {
-        return createToObjectTransformer(config)
-    }
     if (type === 'dict_mapper') {
         return createDictMapperTransformer(config)
+    }
+    if (type === 'normalize') {
+        return createNormalizeTransformer(config)
+    }
+    if (type === 'to_object') {
+        return createToObjectTransformer()
     }
 
     throw new Error(`no transformer found for type: ${type}`)

@@ -33,10 +33,12 @@ export const createNormalizeTypeFormTransformer = (options: { fields: string[] }
             }
             mapped = data.answers.reduce((acc: any, answer: any) => {
                 let value
+                let other
                 if (answer.type === 'choice') {
                     value = answer.choice.label
                 } else if (answer.type === 'choices') {
                     value = answer.choices.labels
+                    other = answer.choices.other
                 } else if (answer.type === 'number') {
                     value = answer.number
                 } else if (answer.type === 'text') {
@@ -52,7 +54,8 @@ export const createNormalizeTypeFormTransformer = (options: { fields: string[] }
                     {
                         id: slugify(answer.field.ref),
                         fieldId: answer.field.id,
-                        value
+                        value,
+                        other
                     }
                 ]
             }, mapped)

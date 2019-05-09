@@ -59,6 +59,12 @@ surveys:
             transformers:
                 - type: normalize_typeform
                 - type: cleanup
+                  config:
+                      fields:
+                          - pre_postprocessors_other_other
+                          - cssframeworks_other_other
+                          - methodologies_other_other
+                          - cssinjs_other_other
                 - type: user_info
                   config:
                       fields:
@@ -138,6 +144,22 @@ surveys:
                           - cssinjs_radium
                           - cssinjs_emotion
                           - cssinjs_cssmodules
+                - type: normalize
+                  config:
+                      normalization: pre_post_processors
+                      fields: [pre_postprocessors_other_other]
+                - type: normalize
+                  config:
+                      normalization: css_frameworks
+                      fields: [cssframeworks_other_other]
+                - type: normalize
+                  config:
+                      normalization: methodologies
+                      fields: [methodologies_other_other]
+                - type: normalize
+                  config:
+                      normalization: css_in_js
+                      fields: [cssinjs_other_other]
                 - type: to_object
             sections:
                 - id: FEATURES
@@ -556,6 +578,7 @@ surveys:
                             others:
                                 type: terms
                                 field: pre_postprocessors_other_other
+                                size: 50
                 - section: css-frameworks
                   dest: tools
                   items:
@@ -831,3 +854,67 @@ dictionaries:
           label: 🚫 Heard of it > Not interested
         - id: never_heard
           label: 🤷 Never heard of it/Not sure what it is
+
+###############################################################################
+#
+#  Normalizations
+#  used to normalize value from freeform responses
+#
+###############################################################################
+normalizations:
+    pre_post_processors:
+        - match: /auto?-?prefix(er)?/i
+          replace: Autoprefixer
+        - match: /^s(a|c)ss$/i
+          replace: SASS
+        - match: /compass/i
+          replace: Compass
+        - match: /css\s*modules/i
+          replace: CSS Modules
+        - match: /styled?.*components/i
+          replace: styled-components
+        - match: /css.*in.*js/i
+          replace: CSS in JS
+        - match: /css.*next/i
+    
+    css_frameworks:
+        - match: /bass.*css/i
+          replace: Basscss
+        - match: /bootstrap/i
+          replace: Bootstrap
+        - match: /elm.*ui/i
+          replace: elm-ui
+        - match: /ionic/i
+          replace: Ionic
+        - match: /inuit/i
+          replace: Inuit
+        - match: /skeleton/i
+          replace: Skeleton
+        - match: /angular.*material/i
+          replace: Angular Material
+        - match: /^material$/i
+          replace: Material
+        - match: /spectre/i
+          replace: Spectre
+        - match: /blueprint/i
+          replace: Blueprint
+        - match: /styled?.*components/i
+          replace: styled-components  
+        - match: /material.*ui/i
+          replace: Material UI
+        - match: /bourbon/i
+          replace: Bourbon
+        - match: /vuetify/i
+          replace: Vuetify
+                   
+    methodologies: []
+
+    css_in_js:
+        - match: /linaria/i
+          replace: Linaria
+        - match: /styled?.*components/i
+          replace: styled-components
+        - match: /fela/i
+          replace: Fela
+        - match: /astroturf/i
+          replace: Astroturf

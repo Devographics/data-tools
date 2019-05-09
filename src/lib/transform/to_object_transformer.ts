@@ -1,4 +1,4 @@
-export const createToObjectTransformer = (options?: any) => {
+export const createToObjectTransformer = () => {
     return {
         transform: (data: any[]) => {
             return data.reduce((acc: any, item: any) => {
