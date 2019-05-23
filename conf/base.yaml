@@ -246,7 +246,7 @@ surveys:
                         aggregations:
                             breakdown:
                                 type: terms
-                                field: aboutyou_howdidyoufindoutaboutthissurvey
+                                field: aboutyou_howdidyoufindoutaboutthissurvey.value
                                 size: 27
                 - section: layout
                   dest: features_usage
