@@ -20,10 +20,12 @@ export const createNormalizeTransformer = (options: NormalizeConfig) => {
     const matchers = normalization.map((norm: any) => {
         const m = norm.match.match(/\/(.*)\/([gim]*)/)
         if (m === null) {
-            throw new Error(`Invalid normalize transformer regexp '${norm.match}' (${options.normalization})`)
+            throw new Error(
+                `Invalid normalize transformer regexp '${norm.match}' (${options.normalization})`
+            )
         }
         const regexp = new RegExp(m[1], m[2])
-        
+
         return { ...norm, regexp }
     })
 

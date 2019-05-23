@@ -33,7 +33,7 @@ export const runTermsAggregation = async (
     console.log(`> running terms aggregation for field: ${config.field}`)
     const client = createClient()
 
-    const field = `${config.field}.value${config.isNumber ? '' : '.keyword'}`
+    const field = `${config.field}${config.isNumber ? '' : '.keyword'}`
 
     const boolQuery: any = {
         must: [

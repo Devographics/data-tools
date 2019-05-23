@@ -16,9 +16,7 @@ export type TransformerType =
     | 'dict_mapper'
     | 'normalize'
 
-export type TransformerConfig =
-    | DictMapperConfig
-    | NormalizeConfig
+export type TransformerConfig = DictMapperConfig | NormalizeConfig
 
 const transformerByType = (type: TransformerType, config?: any): Transformer => {
     if (type === 'user_info') {

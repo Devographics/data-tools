@@ -82,6 +82,16 @@ surveys:
                           - aboutyou_yearsofexperience
                 - type: dict_mapper
                   config:
+                      dict: salary
+                      fields:
+                          - aboutyou_yearlysalary
+                - type: dict_mapper
+                  config:
+                      dict: company_size
+                      fields:
+                          - aboutyou_companysize
+                - type: dict_mapper
+                  config:
                       dict: usage
                       fields:
                           - layout_cssgrid
@@ -146,20 +156,12 @@ surveys:
                           - cssinjs_cssmodules
                 - type: normalize
                   config:
-                      normalization: pre_post_processors
-                      fields: [pre_postprocessors_other_other]
-                - type: normalize
-                  config:
-                      normalization: css_frameworks
-                      fields: [cssframeworks_other_other]
-                - type: normalize
-                  config:
-                      normalization: methodologies
-                      fields: [methodologies_other_other]
-                - type: normalize
-                  config:
-                      normalization: css_in_js
-                      fields: [cssinjs_other_other]
+                      normalization: tools
+                      fields:
+                          - pre_postprocessors_other_other
+                          - cssframeworks_other_other
+                          - methodologies_other_other
+                          - cssinjs_other_other
                 - type: to_object
             sections:
                 - id: FEATURES
@@ -169,28 +171,35 @@ surveys:
                 - id: OPINIONS
                 - id: USER_INFO
             aggregations:
-                - section: new-demographics
+                - section: demographics
+                  dest: demographics
                   items:
-                      - id: by_country
-                        type: terms
-                        field: aboutyou_yourcountry
-                        size: 300
-                      - id: by_city
-                        type: terms
-                        field: aboutyou_yourcity
-                        size: 300
-                      - id: gender_breakdown
-                        type: terms
-                        field: aboutyou_yourgender
+                      # - id: by_country
+                      #   type: terms
+                      #   field: aboutyou_yourcountry
+                      #   size: 300
+                      # - id: by_city
+                      #   type: terms
+                      #   field: aboutyou_yourcity
+                      #   size: 300
+                      # - id: gender_breakdown
+                      #   type: terms
+                      #   field: aboutyou_yourgender
                       - id: salary
-                        type: terms
-                        field: aboutyou_yearlysalary
-                      - id: company_size
-                        type: terms
-                        field: aboutyou_companysize
-                      - id: years_of_experience
-                        type: terms
-                        field: aboutyou_yearsofexperience
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_yearlysalary.value
+                      - id: company-size
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_companysize.value
+                      - id: years-of-experience
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_yearsofexperience.value
                 - section: layout
                   dest: features_usage
                   items:
@@ -198,10 +207,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: layout_cssgrid
+                                field: layout_cssgrid.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         layout_cssgrid.value.keyword: used_it
@@ -209,10 +218,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: layout_flexbox
+                                field: layout_flexbox.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         layout_flexbox.value.keyword: used_it
@@ -220,10 +229,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: layout_cssmulticolumn
+                                field: layout_cssmulticolumn.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         layout_cssmulticolumn.value.keyword: used_it
@@ -231,10 +240,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: layout_csswritingmodes
+                                field: layout_csswritingmodes.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         layout_csswritingmodes.value.keyword: used_it
@@ -242,10 +251,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: layout_cssexclusions
+                                field: layout_cssexclusions.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         layout_cssexclusions.value.keyword: used_it
@@ -256,10 +265,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: shapes_graphics_cssshapes
+                                field: shapes_graphics_cssshapes.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         shapes_graphics_cssshapes.value.keyword: used_it
@@ -267,10 +276,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: shapes_graphics_objectfit
+                                field: shapes_graphics_objectfit.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         shapes_graphics_objectfit.value.keyword: used_it
@@ -278,10 +287,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: shapes_graphics_clippath
+                                field: shapes_graphics_clippath.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         shapes_graphics_clippath.value.keyword: used_it
@@ -289,10 +298,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: shapes_graphics_cssmasks
+                                field: shapes_graphics_cssmasks.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         shapes_graphics_cssmasks.value.keyword: used_it
@@ -300,10 +309,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: shapes_graphics_blendmodes
+                                field: shapes_graphics_blendmodes.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         shapes_graphics_blendmodes.value.keyword: used_it
@@ -312,10 +321,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: shapes_graphics_cssfiltereffects
+                                field: shapes_graphics_cssfiltereffects.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         shapes_graphics_cssfiltereffects.value.keyword: used_it
@@ -326,10 +335,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: interactions_cssscrollsnap
+                                field: interactions_cssscrollsnap.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         interactions_cssscrollsnap.value.keyword: used_it
@@ -337,10 +346,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: interactions_overscrollbehavior
+                                field: interactions_overscrollbehavior.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         interactions_overscrollbehavior.value.keyword: used_it
@@ -348,10 +357,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: interactions_overflowanchor
+                                field: interactions_overflowanchor.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         interactions_overflowanchor.value.keyword: used_it
@@ -362,10 +371,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: typography_webfonts_fontface
+                                field: typography_webfonts_fontface.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         typography_webfonts_fontface.value.keyword: used_it
@@ -373,10 +382,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: typography_variablefonts
+                                field: typography_variablefonts.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         typography_variablefonts.value.keyword: used_it
@@ -384,10 +393,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens
+                                field: typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens.value.keyword: used_it
@@ -395,10 +404,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: typography_fontvariant
+                                field: typography_fontvariant.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         typography_fontvariant.value.keyword: used_it
@@ -406,10 +415,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: typography_initialletter
+                                field: typography_initialletter.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         typography_initialletter.value.keyword: used_it
@@ -420,10 +429,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: animations_transforms_csstransitions
+                                field: animations_transforms_csstransitions.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         animations_transforms_csstransitions.value.keyword: used_it
@@ -431,10 +440,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: animations_transforms_csstransforms
+                                field: animations_transforms_csstransforms.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         animations_transforms_csstransforms.value.keyword: used_it
@@ -442,10 +451,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: animations_transforms_cssanimations
+                                field: animations_transforms_cssanimations.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         animations_transforms_cssanimations.value.keyword: used_it
@@ -456,10 +465,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: otherfeatures_cssvariables
+                                field: otherfeatures_cssvariables.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         otherfeatures_cssvariables.value.keyword: used_it
@@ -467,10 +476,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: otherfeatures_featuresupportqueries_supports
+                                field: otherfeatures_featuresupportqueries_supports.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         otherfeatures_featuresupportqueries_supports.value.keyword: used_it
@@ -478,10 +487,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: otherfeatures_csscontainment
+                                field: otherfeatures_csscontainment.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         otherfeatures_csscontainment.value.keyword: used_it
@@ -489,10 +498,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: otherfeatures_willchange
+                                field: otherfeatures_willchange.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         otherfeatures_willchange.value.keyword: used_it
@@ -500,10 +509,10 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: otherfeatures_calc
+                                field: otherfeatures_calc.value
                             usageByExperience:
                                 type: terms_sub_filter
-                                field: aboutyou_yearsofexperience
+                                field: aboutyou_yearsofexperience.value
                                 filter:
                                     term:
                                         otherfeatures_calc.value.keyword: used_it
@@ -514,42 +523,42 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_units
+                                field: units_selectors_units.value
                       - id: pseudo-elements
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_pseudoelements
+                                field: units_selectors_pseudoelements.value
                       - id: combinators
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_combinators
+                                field: units_selectors_combinators.value
                       - id: tree-document-structure
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_tree_documentstructure
+                                field: units_selectors_tree_documentstructure.value
                       - id: attributes
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_attributes
+                                field: units_selectors_attributes.value
                       - id: links-urls
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_links_urls
+                                field: units_selectors_links_urls.value
                       - id: interaction
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_interaction
+                                field: units_selectors_interaction.value
                       - id: form-controls
                         aggregations:
                             usage:
                                 type: terms
-                                field: units_selectors_formcontrols
+                                field: units_selectors_formcontrols.value
                 - section: pre-post-processors
                   dest: tools
                   items:
@@ -557,27 +566,27 @@ surveys:
                         aggregations:
                             opinion:
                                 type: terms
-                                field: pre_postprocessors_sass
+                                field: pre_postprocessors_sass.value
                       - id: less
                         aggregations:
                             opinion:
                                 type: terms
-                                field: pre_postprocessors_less
+                                field: pre_postprocessors_less.value
                       - id: postcss
                         aggregations:
                             opinion:
                                 type: terms
-                                field: pre_postprocessors_postcss
+                                field: pre_postprocessors_postcss.value
                       - id: stylus
                         aggregations:
                             opinion:
                                 type: terms
-                                field: pre_postprocessors_stylus
+                                field: pre_postprocessors_stylus.value
                       - id: other-pre-post-processors
                         aggregations:
                             others:
                                 type: terms
-                                field: pre_postprocessors_other_other
+                                field: pre_postprocessors_other_other.value
                                 size: 50
                 - section: css-frameworks
                   dest: tools
@@ -586,62 +595,62 @@ surveys:
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_bootstrap
+                                field: cssframeworks_bootstrap.value
                       - id: materialize-css
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_materializecss
+                                field: cssframeworks_materializecss.value
                       - id: ant-design
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_antdesign
+                                field: cssframeworks_antdesign.value
                       - id: semantic-ui
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_semanticui
+                                field: cssframeworks_semanticui.value
                       - id: bulma
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_bulma
+                                field: cssframeworks_bulma.value
                       - id: foundation
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_foundation
+                                field: cssframeworks_foundation.value
                       - id: uikit
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_uikit
+                                field: cssframeworks_uikit.value
                       - id: tachyons
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_tachyons
+                                field: cssframeworks_tachyons.value
                       - id: primer
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_primer
+                                field: cssframeworks_primer.value
                       - id: tailwind
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_tailwind
+                                field: cssframeworks_tailwind.value
                       - id: purecss
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssframeworks_purecss
+                                field: cssframeworks_purecss.value
                       - id: other-css-frameworks
                         aggregations:
                             others:
                                 type: terms
-                                field: cssframeworks_other_other
+                                field: cssframeworks_other_other.value
                 - section: methodologies
                   dest: tools
                   items:
@@ -649,32 +658,32 @@ surveys:
                         aggregations:
                             opinion:
                                 type: terms
-                                field: methodologies_bem
+                                field: methodologies_bem.value
                       - id: atomic-css
                         aggregations:
                             opinion:
                                 type: terms
-                                field: methodologies_atomiccss
+                                field: methodologies_atomiccss.value
                       - id: oocss
                         aggregations:
                             opinion:
                                 type: terms
-                                field: methodologies_oocss
+                                field: methodologies_oocss.value
                       - id: smacss
                         aggregations:
                             opinion:
                                 type: terms
-                                field: methodologies_smacss
+                                field: methodologies_smacss.value
                       - id: it-css
                         aggregations:
                             opinion:
                                 type: terms
-                                field: methodologies_itcss
+                                field: methodologies_itcss.value
                       - id: other-methodologies
                         aggregations:
                             others:
                                 type: terms
-                                field: methodologies_other_other
+                                field: methodologies_other_other.value
                 - section: css-in-js
                   dest: tools
                   items:
@@ -682,47 +691,47 @@ surveys:
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_styledcomponents
+                                field: cssinjs_styledcomponents.value
                       - id: glamor
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_glamor
+                                field: cssinjs_glamor.value
                       - id: aphrodite
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_aphrodite
+                                field: cssinjs_aphrodite.value
                       - id: jss
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_jss
+                                field: cssinjs_jss.value
                       - id: styled-jsx
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_styledjsx
+                                field: cssinjs_styledjsx.value
                       - id: radium
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_radium
+                                field: cssinjs_radium.value
                       - id: emotion
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_emotion
+                                field: cssinjs_emotion.value
                       - id: css-modules
                         aggregations:
                             opinion:
                                 type: terms
-                                field: cssinjs_cssmodules
+                                field: cssinjs_cssmodules.value
                       - id: other-css-in-js
                         aggregations:
                             others:
                                 type: terms
-                                field: cssinjs_other_other
+                                field: cssinjs_other_other.value
                 - section: other-tools
                   dest: other-tools
                   items:
@@ -730,12 +739,18 @@ surveys:
                         aggregations:
                             usage:
                                 type: terms
-                                field: othertools_texteditors
+                                field: othertools_texteditors.value
+                            others:
+                                type: terms
+                                field: othertools_texteditors.other
                       - id: browsers
                         aggregations:
                             usage:
                                 type: terms
-                                field: othertools_browsers
+                                field: othertools_browsers.value
+                            others:
+                                type: terms
+                                field: othertools_browsers.other
                 - section: environments
                   dest: environments
                   items:
@@ -743,12 +758,12 @@ surveys:
                         aggregations:
                             environments:
                                 type: terms
-                                field: environments_browsers
+                                field: environments_browsers.value
                       - id: form-factors
                         aggregations:
                             environments:
                                 type: terms
-                                field: environments_formfactors
+                                field: environments_formfactors.value
                       # "environments_cssforprint": {
                       # "environments_cssforemailclients": {
                 - section: resources
@@ -758,17 +773,17 @@ surveys:
                         aggregations:
                             resources:
                                 type: terms
-                                field: resources_blogs_magazines
+                                field: resources_blogs_magazines.value
                       - id: sites-courses
                         aggregations:
                             resources:
                                 type: terms
-                                field: resources_sites_courses
+                                field: resources_sites_courses.value
                       - id: podcasts
                         aggregations:
                             resources:
                                 type: terms
-                                field: resources_podcasts
+                                field: resources_podcasts.value
                 - section: opinions
                   dest: opinions
                   items:
@@ -776,43 +791,43 @@ surveys:
                         aggregations:
                             opinion:
                                 type: terms
-                                field: opinionquestions_cssiseasytolearn
+                                field: opinionquestions_cssiseasytolearn.value
                                 isNumber: true
                       - id: evolving-too-slowly
                         aggregations:
                             opinion:
                                 type: terms
-                                field: opinionquestions_cssisevolvingtooslowly
+                                field: opinionquestions_cssisevolvingtooslowly.value
                                 isNumber: true
                       - id: utility-classes
                         aggregations:
                             opinion:
                                 type: terms
-                                field: opinionquestions_utility_nonsemantic_classes_center_largetext_etc_shouldbeavoided
+                                field: opinionquestions_utility_nonsemantic_classes_center_largetext_etc_shouldbeavoided.value
                                 isNumber: true
                       - id: selector-nesting
                         aggregations:
                             opinion:
                                 type: terms
-                                field: opinionquestions_selectornesting_foo_barulli_shouldbeavoided
+                                field: opinionquestions_selectornesting_foo_barulli_shouldbeavoided.value
                                 isNumber: true
                       - id: programming-language
                         aggregations:
                             opinion:
                                 type: terms
-                                field: opinionquestions_cssisaprogramminglanguage
+                                field: opinionquestions_cssisaprogramminglanguage.value
                                 isNumber: true
                       - id: enjoy-css
                         aggregations:
                             opinion:
                                 type: terms
-                                field: opinionquestions_ienjoywritingcss
+                                field: opinionquestions_ienjoywritingcss.value
                                 isNumber: true
                       - id: missing-features
                         aggregations:
                             features:
                                 type: terms
-                                field: opinionquestions_whatdoyoufeeliscurrentlymissingfromcss
+                                field: opinionquestions_whatdoyoufeeliscurrentlymissingfromcss.value
 
 ###############################################################################
 #
@@ -822,18 +837,52 @@ surveys:
 ###############################################################################
 dictionaries:
     years_of_experience:
-        - id: less-than-1
+        - id: less_than_1
           label: Less than one year
-        - id: 1-2
+        - id: '1_2'
           label: 1-2 years
-        - id: 2-5
+        - id: '2_5'
           label: 2-5 years
-        - id: 5-10
+        - id: '5_10'
           label: 5-10 years
-        - id: 10-20
+        - id: '10_20'
           label: 10-20 years
-        - id: more-than-20
+        - id: more_than_20
           label: 20+ years
+
+    salary:
+        - id: none
+          label: 'I work for free :('
+        - id: '0_10'
+          label: $0-$10k
+        - id: '10_30'
+          label: $10k-$30k
+        - id: '30_50'
+          label: $30k-$50k
+        - id: '50_100'
+          label: $50k-$100k
+        - id: '100_200'
+          label: $100k-$200k
+        - id: 200_more
+          label: $200k+
+
+    company_size:
+        - id: '1'
+          label: Just me
+        - id: '1_5'
+          label: 1-5 people
+        - id: '5_10'
+          label: 5-10 people
+        - id: '10_20'
+          label: 10-20 people
+        - id: '20_50'
+          label: 20-50 people
+        - id: '50_100'
+          label: 50-100 people
+        - id: '100_1000'
+          label: 100-1000 people
+        - id: more_than_1000
+          label: 1000+ people
 
     usage:
         - id: used_it
@@ -862,24 +911,25 @@ dictionaries:
 #
 ###############################################################################
 normalizations:
-    pre_post_processors:
+    tools:
         - match: /auto?-?prefix(er)?/i
           replace: Autoprefixer
         - match: /^s(a|c)ss$/i
           replace: SASS
         - match: /compass/i
           replace: Compass
-        - match: /css\s*modules/i
+        - match: /^css.*modules?/i
           replace: CSS Modules
         - match: /styled?.*components/i
           replace: styled-components
         - match: /css.*in.*js/i
           replace: CSS in JS
         - match: /css.*next/i
-    
-    css_frameworks:
+          replace: CSS Next
+        - match: /pug/i
+          replace: pug
         - match: /bass.*css/i
-          replace: Basscss
+          replace: BassCSS
         - match: /bootstrap/i
           replace: Bootstrap
         - match: /elm.*ui/i
@@ -890,6 +940,8 @@ normalizations:
           replace: Inuit
         - match: /skeleton/i
           replace: Skeleton
+        - match: /material.*ui/i
+          replace: Material UI
         - match: /angular.*material/i
           replace: Angular Material
         - match: /^material$/i
@@ -898,23 +950,45 @@ normalizations:
           replace: Spectre
         - match: /blueprint/i
           replace: Blueprint
-        - match: /styled?.*components/i
-          replace: styled-components  
-        - match: /material.*ui/i
-          replace: Material UI
         - match: /bourbon/i
           replace: Bourbon
         - match: /vuetify/i
           replace: Vuetify
-                   
-    methodologies: []
-
-    css_in_js:
         - match: /linaria/i
           replace: Linaria
-        - match: /styled?.*components/i
-          replace: styled-components
         - match: /fela/i
           replace: Fela
         - match: /astroturf/i
           replace: Astroturf
+        - match: /stylable/i
+          replace: Stylable
+        - match: /^less$/i
+          replace: Less
+        - match: /^jss$/i
+          replace: JSS
+        - match: /^jss$/i
+          replace: JSS
+        - match: /^post.*css$/i
+          replace: PostCSS
+        - match: /^suit/i
+          replace: Suit CSS
+        - match: /^rscss$/i
+          replace: RSCSS
+        - match: /^functional.*css$/i
+          replace: Functional CSS
+        - match: /^bem$/i
+          replace: BEM
+        - match: /^bem.*it$/i
+          replace: BEMIT
+        - match: /^abem$/i
+          replace: ABEM
+        - match: /^bevm$/i
+          replace: BEVM
+        - match: /^ecss$/i
+          replace: ECSS
+        - match: /^flocss$/i
+          replace: FLOCSS
+        - match: /^styletron$/i
+          replace: Styletron
+        - match: /^styled.*system$/i
+          replace: styled-system
