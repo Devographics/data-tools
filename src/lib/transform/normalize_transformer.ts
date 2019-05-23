@@ -37,7 +37,8 @@ export const createNormalizeTransformer = (options: NormalizeConfig) => {
                         if (isString(item.value) && item.value.match(matcher.regexp) !== null) {
                             return {
                                 ...item,
-                                value: matcher.replace
+                                value: matcher.replace,
+                                raw: item.value
                             }
                         }
                     }

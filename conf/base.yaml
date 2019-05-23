@@ -92,6 +92,26 @@ surveys:
                           - aboutyou_companysize
                 - type: dict_mapper
                   config:
+                      dict: gender
+                      fields:
+                          - aboutyou_yourgender
+                - type: dict_mapper
+                  config:
+                      dict: backend_proficiency
+                      fields:
+                          - aboutyou_backendproficiency
+                - type: dict_mapper
+                  config:
+                      dict: javascript_proficiency
+                      fields:
+                          - aboutyou_javascriptproficiency
+                - type: dict_mapper
+                  config:
+                      dict: job_title
+                      fields:
+                          - aboutyou_jobtitle
+                - type: dict_mapper
+                  config:
                       dict: usage
                       fields:
                           - layout_cssgrid
@@ -162,6 +182,11 @@ surveys:
                           - cssframeworks_other_other
                           - methodologies_other_other
                           - cssinjs_other_other
+                - type: normalize
+                  config:
+                      normalization: sources
+                      fields:
+                          - aboutyou_howdidyoufindoutaboutthissurvey
                 - type: to_object
             sections:
                 - id: FEATURES
@@ -182,9 +207,11 @@ surveys:
                       #   type: terms
                       #   field: aboutyou_yourcity
                       #   size: 300
-                      # - id: gender_breakdown
-                      #   type: terms
-                      #   field: aboutyou_yourgender
+                      - id: gender
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_yourgender.value
                       - id: salary
                         aggregations:
                             breakdown:
@@ -200,6 +227,27 @@ surveys:
                             breakdown:
                                 type: terms
                                 field: aboutyou_yearsofexperience.value
+                      - id: backend-proficiency
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_backendproficiency.value
+                      - id: javascript-proficiency
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_javascriptproficiency.value
+                      - id: job-title
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_jobtitle.value
+                      - id: source
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_howdidyoufindoutaboutthissurvey
+                                size: 27
                 - section: layout
                   dest: features_usage
                   items:
@@ -904,6 +952,52 @@ dictionaries:
         - id: never_heard
           label: 🤷 Never heard of it/Not sure what it is
 
+    gender:
+        - id: male
+          label: Male
+        - id: female
+          label: Female
+        - id: prefer_not_to_say
+          label: Prefer not to say
+        - id: non_binary
+          label: Non-binary/ third gender
+
+    backend_proficiency:
+        - id: able_to_setup_from_scratch
+          label: I can set up an entire back-end from scratch (Go, Node, etc.)
+        - id: able_to_setup_cms_or_site_generator
+          label: I can set up all-in-one CMSs (WordPress, etc.) or static site generators (Jekyll, etc.)
+        - id: able_to_use_existing_frameworks
+          label: I can develop apps using pre-existing frameworks (Rails, Laravel, etc.)
+        - id: none
+          label: I am not able to handle any back-end work
+
+    javascript_proficiency:
+        - id: advanced_front_end_patterns
+          label: I can handle advanced front-end patterns (state management, data loading, etc.)
+        - id: existing_codebases_using_modern_frameworks
+          label: I can work on existing front-end codebases using modern frameworks (React, Vue, etc.)
+        - id: short_simple_javascript
+          label: I can write short, simple JavaScript or jQuery statements
+        - id: entire_codebases_from_scratch
+          label: I can architecture entire front-end codebases from scratch
+        - id: none
+          label: I am not able to write any JavaScript
+
+    job_title:
+        - id: front_end_dev
+          label: Front-end Developer/Engineer
+        - id: full_stack_dev
+          label: Full-stack Developer/Engineer
+        - id: web_designer
+          label: Web Designer
+        - id: ux_designer
+          label: UX Designer
+        - id: ui_designer
+          label: UI Designer
+        - id: back_end_dev
+          label: Back-end Developer/Engineer
+
 ###############################################################################
 #
 #  Normalizations
@@ -992,3 +1086,118 @@ normalizations:
           replace: Styletron
         - match: /^styled.*system$/i
           replace: styled-system
+
+    sources:
+        - match: /tw(i|e)(i|e)?t/i, 'twitter'],
+          replace: twitter
+        - match: /sa(c|s)ha.*greif/i
+          replace: twitter
+        - match: /@(chromedevtools|mxstbr)/i
+          replace: twitter
+        - match: /e?mail/i
+          replace: email
+        - match: /e-mail/i
+          replace: email
+        - match: /subscribed/i
+          replace: email
+        - match: /subscription/i
+          replace: email
+        # assuming people who did it before fall into the 'email' category
+        - match: /(previous|last|every) (year|survey)/i
+          replace: email
+        - match: /it before/i
+          replace: email
+        - match: /state.*of.*(js|javascript)/i
+          replace: stateofjs
+        - match: /(js|javascript).*survey/i
+          replace: stateofjs
+        - match: /stateofcss/i
+          replace: stateofcss
+        - match: /designer.*news/i
+          replace: Designer News
+        - match: /front.*end.*focus/i
+          replace: Frontend Focus
+        - match: /front.*end.*front/i
+          replace: Front-End Front
+        - match: /one.*page.*love/i
+          replace: One Page Love
+        - match: /(wp|wordpress).*tavern/i
+          replace: WordPress Tavern
+        - match: /free.*code.*camp/i
+          replace: freeCodeCamp
+        - match: /redd?it/i
+          replace: reddit
+        - match: /r3dd1t/i
+          replace: reddit
+        - match: /\/?r\/(javascript|clojure|reactjs|angular|webdev|programming|web_design)/i
+          replace: reddit
+        - match: /hacker.*news/i
+          replace: Hacker news
+        - match: /hacknews/i
+          replace: Hacker news
+        - match: /hckrnews/i
+          replace: Hacker news
+        - match: /^hn$/i
+          replace: Hacker news
+        - match: /ycombinator/i
+          replace: Hacker news
+        - match: /med(iu|ui)m/i
+          replace: Medium
+        - match: /css.*tricks?/i
+          replace: CSS Tricks
+        - match: /responsive.*design.*weekly/i
+          replace: Responsive Design Weekly
+        - match: /rdw/i
+          replace: Responsive Design Weekly
+        - match: /work/i
+          replace: work
+        - match: /cto/i
+          replace: work
+        - match: /boss$/i
+          replace: work
+        - match: /coll?ea?gu?a?es?/i
+          replace: work
+        - match: /fellow/i
+          replace: work
+        - match: /company/i
+          replace: work
+        - match: /team ?mate/i
+          replace: work
+        - match: /we(s|b) ?br?o(s|z)/i
+          replace: Wes Bos
+        - match: /wes the bos/i
+          replace: Wes Bos
+        - match: /^wes$/i
+          replace: Wes Bos
+        - match: /wes barracuda bos/i
+          replace: Wes Bos
+        - match: /sidebar/i
+          replace: sidebar.io
+        - match: /mu(z|s)(li|il)/i
+          replace: Muzli
+        - match: /css.*layout.*news/i
+          replace: CSS Layout News
+        - match: /css.*weekly/i
+          replace: CSS Weekly
+        - match: /smashing/i
+          replace: Smashing Magazine
+        - match: /codrops/i
+          replace: Codrops
+        - match: /codedrops/i
+          replace: Codrops
+        - match: /tympanus/i
+          replace: Codrops
+        - match: /facebook/i
+          replace: facebook
+        - match: /fb/i
+          replace: facebook
+        - match: /slack/i
+          replace: Slack
+        - match: /telegram/i
+          replace: Telegram
+        - match: /friends?/i
+          replace: friend
+        - match: /slashdot/i
+          replace: slashdot
+        - match: /newsletter/i
+          replace: Newsletter

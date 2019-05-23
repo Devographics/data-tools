@@ -30,7 +30,7 @@ export const createDictMapperTransformer = (options: DictMapperConfig) => {
                 if (options.fields.includes(item.id)) {
                     const id = idByLabel[item.value]
                     if (id !== undefined) {
-                        return { ...item, value: id }
+                        return { ...item, value: id, raw: item.value }
                     }
                 }
 
