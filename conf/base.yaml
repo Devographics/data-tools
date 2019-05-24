@@ -204,7 +204,7 @@ surveys:
                 - section: demographics
                   dest: demographics
                   items:
-                      - id: country
+                      - id: participation-by-country
                         aggregations:
                             breakdown:
                                 type: terms
