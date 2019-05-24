@@ -204,10 +204,12 @@ surveys:
                 - section: demographics
                   dest: demographics
                   items:
-                      # - id: by_country
-                      #   type: terms
-                      #   field: aboutyou_yourcountry
-                      #   size: 300
+                      - id: country
+                        aggregations:
+                            breakdown:
+                                type: terms
+                                field: aboutyou_yourcountry.value
+                                size: 135
                       - id: gender
                         aggregations:
                             breakdown:
