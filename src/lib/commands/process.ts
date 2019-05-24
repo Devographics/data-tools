@@ -6,7 +6,7 @@ import * as config from '@ekino/config'
 import { getSurveyReleaseConfig } from '../config'
 import { TypeFormClient, TypeFormResponsesFilters } from '../extract/typeform_client'
 import { createCompositeTransformer } from '../transform/composite_transformer'
-import { createElasticsearchLoader } from '../load/elasticsearc_loader'
+import { createElasticsearchLoader } from '../load/elasticsearch_loader'
 
 export const createProcessCommand = (program: Command, logger: Logger) => {
     program
@@ -39,12 +39,15 @@ export const createProcessCommand = (program: Command, logger: Logger) => {
 
                 await tfClient.listAllFormResponses(
                     releaseConfig.typeform_id,
-                    async (res, iteration) => {
-                        await esLoader.load(
-                            res.items
-                                .filter(item => item.answers !== undefined)
-                                .map(item => transformer.transform(item))
-                        )
+                    async res => {
+                        const filteredItems = res.items.filter(item => item.answers !== undefined)
+                        const transformedItems = []
+                        for (const item of filteredItems) {
+                            const transformedItem = await transformer.transform(item)
+                            transformedItems.push(transformedItem)
+                        }
+
+                        await esLoader.load(transformedItems)
                     },
                     { page_size: options.batchSize, completed: true }
                 )

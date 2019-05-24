@@ -65,16 +65,16 @@ surveys:
                           - cssframeworks_other_other
                           - methodologies_other_other
                           - cssinjs_other_other
-                - type: user_info
+                          - aboutyou_yourcountry
+                          - aboutyou_howdidyoufindoutaboutthissurvey
+                - type: normalize
                   config:
+                      normalization: countries
                       fields:
-                          - email
-                          - company_size
-                          - yearly_salary
+                          - aboutyou_yourcountry
                 - type: geo
                   config:
-                      fields:
-                          - country
+                      field: aboutyou_yourcountry
                 - type: dict_mapper
                   config:
                       dict: years_of_experience
@@ -202,10 +202,6 @@ surveys:
                       # - id: by_country
                       #   type: terms
                       #   field: aboutyou_yourcountry
-                      #   size: 300
-                      # - id: by_city
-                      #   type: terms
-                      #   field: aboutyou_yourcity
                       #   size: 300
                       - id: gender
                         aggregations:
@@ -1201,3 +1197,43 @@ normalizations:
           replace: slashdot
         - match: /newsletter/i
           replace: Newsletter
+
+    countries:
+        - match: /^united statess?$/i
+          replace: United States
+        - match: /unite(d|s)? states? of america/i
+          replace: United States
+        - match: /^u\.?s\.?a?\.?$/i
+          replace: United States
+        - match: /^us ?of ?a$/i
+          replace: United States
+        - match: /^(the )?netherlands$/i
+          replace: netherlands
+        - match: /united kingdom/i
+          replace: United Kingdom
+        - match: /^u\.?k\.?/i
+          replace: United Kingdom
+        - match: /england/i
+          replace: United Kingdom
+        - match: /catalonia/i
+          replace: Spain
+        - match: /wales/i
+          replace: United Kingdom
+        - match: /ger?many/i
+          replace: Germany
+        - match: /agrentina/i
+          replace: Argentina
+        - match: /australia/i
+          replace: Australia
+        - match: /brazil/i
+          replace: Brazil
+        - match: /czechia/i
+          replace: Czech Republic
+        - match: /bosnia.*herzegovina/
+          replace: Bosnia and Herzegovina
+        - match: /kazakh?stan/i
+          replace: Kazakhstan
+        - match: /taiwai?n/i
+          replace: Taiwan
+        - match: /austria/i
+          replace: Austria

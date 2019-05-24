@@ -1,4 +1,4 @@
-import { createClient } from '../load/elasticsearc_loader'
+import { createClient } from '../load/elasticsearch_loader'
 import { Omit } from '../utils'
 import { TermsAggregationConfig } from './terms_aggregation'
 import { round, computeBucketsPercentages } from './utils'

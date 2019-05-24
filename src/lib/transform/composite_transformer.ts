@@ -1,6 +1,5 @@
 import { Transformer } from './index'
 import { createNormalizeTypeFormTransformer } from './normalize_typeform_transformer'
-import { createUserInfoTransformer } from './user_info_transformer'
 import { createGeoTransformer } from './geo_transformer'
 import { createCleanupTransformer } from './cleanup_transformer'
 import { createDictMapperTransformer, DictMapperConfig } from './dict_mapper_transformer'
@@ -8,7 +7,6 @@ import { createNormalizeTransformer, NormalizeConfig } from './normalize_transfo
 import { createToObjectTransformer } from './to_object_transformer'
 
 export type TransformerType =
-    | 'user_info'
     | 'geo'
     | 'cleanup'
     | 'normalize_typeform'
@@ -19,9 +17,6 @@ export type TransformerType =
 export type TransformerConfig = DictMapperConfig | NormalizeConfig
 
 const transformerByType = (type: TransformerType, config?: any): Transformer => {
-    if (type === 'user_info') {
-        return createUserInfoTransformer(config)
-    }
     if (type === 'geo') {
         return createGeoTransformer(config)
     }
@@ -53,10 +48,13 @@ export const createCompositeTransformer = (
     const transformerInstances = transformers.map(t => transformerByType(t.type, t.config))
 
     return {
-        transform: (data: any) => {
-            return transformerInstances.reduce((d: any, t: Transformer) => {
-                return t.transform(d)
-            }, data)
+        transform: async (inputData: any) => {
+            let data = inputData
+            for (const transformer of transformerInstances) {
+                data = await transformer.transform(data)
+            }
+
+            return data
         }
     }
 }

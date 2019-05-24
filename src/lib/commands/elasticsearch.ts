@@ -3,7 +3,7 @@ import ora, { Ora } from 'ora'
 import { Command } from 'commander'
 import { Logger } from '@ekino/logger'
 import * as config from '@ekino/config'
-import { createClient } from '../load/elasticsearc_loader'
+import { createClient } from '../load/elasticsearch_loader'
 
 export const listIndicesCommand = (program: Command, logger: Logger) => {
     program

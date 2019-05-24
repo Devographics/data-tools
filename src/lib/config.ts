@@ -4,10 +4,7 @@ import { SectionAggregationsConfig } from './aggregate'
 export interface SurveyReleaseConfig {
     id: string
     typeform_id: string
-    transformers: Array<{
-        type: 'user_info'
-        config?: any
-    }>
+    transformers: any[]
     aggregations: SectionAggregationsConfig[]
 }
 

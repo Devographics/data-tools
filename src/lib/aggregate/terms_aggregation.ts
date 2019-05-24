@@ -1,4 +1,4 @@
-import { createClient } from '../load/elasticsearc_loader'
+import { createClient } from '../load/elasticsearch_loader'
 import { computeBucketsPercentages } from './utils'
 import { BoolQueryCondition, RawAggregation } from './types'
 
