@@ -44,7 +44,7 @@ export const createGeoTransformer = (options: GeoConfig) => {
     return {
         transform: async (data: any) => {
             const countryResponse = data.find((item: any) => item.id === options.field)
-            if (!countryResponse) return data
+            if (!countryResponse || countryResponse.value === undefined) return data
 
             countryResponse.rawValue = countryResponse.value
             countryResponse.value = await normalizeCountryName(countryResponse.value)

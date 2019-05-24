@@ -75,6 +75,11 @@ surveys:
                 - type: geo
                   config:
                       field: aboutyou_yourcountry
+                - type: normalize
+                  config:
+                      normalization: countries_post
+                      fields:
+                          - aboutyou_yourcountry
                 - type: dict_mapper
                   config:
                       dict: years_of_experience
@@ -1215,6 +1220,8 @@ normalizations:
           replace: United Kingdom
         - match: /england/i
           replace: United Kingdom
+        - match: /scotland/i
+          replace: United Kingdom
         - match: /catalonia/i
           replace: Spain
         - match: /wales/i
@@ -1229,7 +1236,7 @@ normalizations:
           replace: Brazil
         - match: /czechia/i
           replace: Czech Republic
-        - match: /bosnia.*herzegovina/
+        - match: /bosnia.*herzegovina/i
           replace: Bosnia and Herzegovina
         - match: /kazakh?stan/i
           replace: Kazakhstan
@@ -1237,3 +1244,43 @@ normalizations:
           replace: Taiwan
         - match: /austria/i
           replace: Austria
+        - match: /south korea/i
+          replace: Korea
+        - match: /Россия/i
+          replace: Russia
+        - match: /Украина/i
+          replace: Ukraine
+        - match: /Magyarorsz(á|a)g/i
+          replace: Hungary
+        - match: /中国/i
+          replace: China
+
+    # those rules should run after normalizing names
+    # using the countries HTTP API
+    countries_post:
+        - match: /Russian Federation/i
+          replace: Russia
+        - match: /United States of America/i
+          replace: USA
+        - match: /United States Minor Outlying Islands/i
+          replace: USA
+        - match: /Macedonia \(the former Yugoslav Republic of\)/i
+          replace: Macedonia
+        - match: /Bolivia \(Plurinational State of\)/i
+          replace: Bolivia
+        - match: /Venezuela \(Bolivarian Republic of\)/i
+          replace: Venezuela
+        - match: /Moldova \(Republic of\)/i
+          replace: Moldova
+        - match: /British Indian Ocean Territory/i
+          replace: India
+        - match: /Korea \(Democratic People's Republic of\)/i
+          replace: Korea
+        - match: /Viet Nam/i
+          replace: Vietnam
+        - match: /Iran \(Islamic Republic of\)/i
+          replace: Iran
+        - match: /Tanzania, United Republic of/i
+          replace: Tanzania
+        - match: /United Kingdom of Great Britain and Northern Ireland/i
+          replace: UK
