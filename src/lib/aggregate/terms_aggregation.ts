@@ -59,7 +59,7 @@ export const runTermsAggregation = async (
                 bool: boolQuery
             },
             aggs: {
-                [config.id]: {
+                aggregation: {
                     terms: {
                         field,
                         size: config.size || 20
@@ -70,12 +70,21 @@ export const runTermsAggregation = async (
     }
     const res = await client.client.search(params)
 
-    const agg = res.aggregations[config.id]
+    const agg = res.aggregations.aggregation
     if (agg.doc_count_error_upper_bound > 0) {
         console.warn(`> terms aggregation contains ${agg.doc_count_error_upper_bound} error(s)`)
     }
 
     const mappedAggregation = mapTermsAggregation(agg, res.hits.total)
+
+    if (config.field === 'units_selectors_formcontrols.value') {
+        console.log(require('util').inspect(config, { depth: null, colors: true }))
+        console.log(require('util').inspect(params, { depth: null, colors: true }))
+        console.log(require('util').inspect(res, { depth: null, colors: true }))
+        console.log(require('util').inspect(agg, { depth: null, colors: true }))
+        console.log(require('util').inspect(mappedAggregation, { depth: null, colors: true }))
+        console.log(require('util').inspect(computeBucketsPercentages(mappedAggregation.buckets, mappedAggregation.total), { depth: null, colors: true }))
+    }
 
     return {
         ...mappedAggregation,
