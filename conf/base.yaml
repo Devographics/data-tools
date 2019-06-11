@@ -70,6 +70,7 @@ surveys:
                           - othertools_browsers_other
                           - aboutyou_howdidyoufindoutaboutthissurvey
                           - hidden__source
+                          - opinionquestions_whatdoyoufeeliscurrentlymissingfromcss
                 # - type: normalize
                 #   config:
                 #       normalization: countries
@@ -210,6 +211,11 @@ surveys:
                           - cssframeworks_other_other
                           - methodologies_other_other
                           - cssinjs_other_other
+                - type: normalize
+                  config:
+                      normalization: missing_css_features
+                      fields:
+                          - opinionquestions_whatdoyoufeeliscurrentlymissingfromcss
                 - type: normalize
                   config:
                       normalization: sources
@@ -923,6 +929,7 @@ surveys:
                             features:
                                 type: terms
                                 field: opinionquestions_whatdoyoufeeliscurrentlymissingfromcss.value
+                                size: 11
 
 ###############################################################################
 #
@@ -1439,3 +1446,40 @@ normalizations:
           replace: UC Browser
         - match: /samsung/i
           replace: Samsung
+
+    missing_css_features:
+        - match: /container (media|width)? ?queries/i,
+          replace: Container Queries
+        - match: /element queries/i,
+          replace: Container Queries
+        - match: /parent selectors?/i
+          replace: Parent Selector
+        - match: /\:parent/i
+          replace: Parent Selector
+        - match: /target parent element/i
+          replace: Parent Selector
+        - match: /nesting/i
+          replace: Nesting
+        - match: /subgrid/i
+          replace: Subgrid
+        - match: /\:has/i
+          replace: :has() selector
+        - match: /mixins?/i
+          replace: Mixins
+        - match: /functions?/i
+          replace: functions
+        - match: /houdini/i
+          replace: Houdini
+        - match: /encapsulation/i
+          replace: Scoping
+        - match: /scop(e|ing)/i
+          replace: Scoping
+        - match: /nothing/i
+          replace: Nothing
+        - match: /browser support/i
+          replace: Browser Support
+        - match: /browser adoption/i
+          replace: Browser Support
+        - match: /consistency/i
+          replace: Browser Support
+
