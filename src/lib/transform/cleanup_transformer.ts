@@ -39,7 +39,8 @@ const emptyValues = [
     '...',
     '--',
     `'`,
-    'undefined'
+    'undefined',
+    'meh'
 ]
 
 export const createCleanupTransformer = (options: CleanupConfig) => {

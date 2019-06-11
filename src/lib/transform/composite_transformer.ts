@@ -5,6 +5,7 @@ import { createCleanupTransformer } from './cleanup_transformer'
 import { createDictMapperTransformer, DictMapperConfig } from './dict_mapper_transformer'
 import { createNormalizeTransformer, NormalizeConfig } from './normalize_transformer'
 import { createToObjectTransformer } from './to_object_transformer'
+import { createSourceTransformer, SourceConfig } from './source_transformer'
 
 export type TransformerType =
     | 'geo'
@@ -13,8 +14,9 @@ export type TransformerType =
     | 'to_object'
     | 'dict_mapper'
     | 'normalize'
+    | 'source'
 
-export type TransformerConfig = DictMapperConfig | NormalizeConfig
+export type TransformerConfig = DictMapperConfig | NormalizeConfig | SourceConfig
 
 const transformerByType = (type: TransformerType, config?: any): Transformer => {
     if (type === 'geo') {
@@ -34,6 +36,9 @@ const transformerByType = (type: TransformerType, config?: any): Transformer => 
     }
     if (type === 'to_object') {
         return createToObjectTransformer()
+    }
+    if (type === 'source') {
+        return createSourceTransformer(config)
     }
 
     throw new Error(`no transformer found for type: ${type}`)

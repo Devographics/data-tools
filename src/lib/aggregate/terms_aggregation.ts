@@ -83,7 +83,12 @@ export const runTermsAggregation = async (
         console.log(require('util').inspect(res, { depth: null, colors: true }))
         console.log(require('util').inspect(agg, { depth: null, colors: true }))
         console.log(require('util').inspect(mappedAggregation, { depth: null, colors: true }))
-        console.log(require('util').inspect(computeBucketsPercentages(mappedAggregation.buckets, mappedAggregation.total), { depth: null, colors: true }))
+        console.log(
+            require('util').inspect(
+                computeBucketsPercentages(mappedAggregation.buckets, mappedAggregation.total),
+                { depth: null, colors: true }
+            )
+        )
     }
 
     return {

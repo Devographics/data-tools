@@ -66,20 +66,33 @@ surveys:
                           - methodologies_other_other
                           - cssinjs_other_other
                           - aboutyou_yourcountry
+                          - othertools_texteditors_other
+                          - othertools_browsers_other
                           - aboutyou_howdidyoufindoutaboutthissurvey
+                          - hidden__source
+                # - type: normalize
+                #   config:
+                #       normalization: countries
+                #       fields:
+                #           - aboutyou_yourcountry
+                # - type: geo
+                #   config:
+                #       field: aboutyou_yourcountry
+                # - type: normalize
+                #   config:
+                #       normalization: countries_post
+                #       fields:
+                #           - aboutyou_yourcountry
                 - type: normalize
                   config:
-                      normalization: countries
+                      normalization: text_editors
                       fields:
-                          - aboutyou_yourcountry
-                - type: geo
-                  config:
-                      field: aboutyou_yourcountry
+                          - othertools_texteditors_other
                 - type: normalize
                   config:
-                      normalization: countries_post
+                      normalization: browsers
                       fields:
-                          - aboutyou_yourcountry
+                          - othertools_browsers_other
                 - type: dict_mapper
                   config:
                       dict: years_of_experience
@@ -179,6 +192,16 @@ surveys:
                           - cssinjs_radium
                           - cssinjs_emotion
                           - cssinjs_cssmodules
+                - type: dict_mapper
+                  config:
+                      dict: css_for_print
+                      fields:
+                          - environments_cssforprint
+                - type: dict_mapper
+                  config:
+                      dict: css_for_email_clients
+                      fields:
+                          - environments_cssforemailclients
                 - type: normalize
                   config:
                       normalization: tools
@@ -192,6 +215,13 @@ surveys:
                       normalization: sources
                       fields:
                           - aboutyou_howdidyoufindoutaboutthissurvey
+                - type: source
+                  config:
+                      normalization: sources
+                      fields:
+                          - hidden__source
+                          - aboutyou_howdidyoufindoutaboutthissurvey
+                      fieldName: survey_source
                 - type: to_object
             sections:
                 - id: FEATURES
@@ -249,8 +279,8 @@ surveys:
                         aggregations:
                             breakdown:
                                 type: terms
-                                field: aboutyou_howdidyoufindoutaboutthissurvey.value
-                                size: 27
+                                field: survey_source.value
+                                size: 30
                 - section: layout
                   dest: features_usage
                   items:
@@ -791,17 +821,23 @@ surveys:
                             usage:
                                 type: terms
                                 field: othertools_texteditors.value
+                      - id: text-editors-others
+                        aggregations:
                             others:
                                 type: terms
-                                field: othertools_texteditors.other
+                                field: othertools_texteditors_other.value
+                                size: 10
                       - id: browsers
                         aggregations:
                             usage:
                                 type: terms
                                 field: othertools_browsers.value
+                      - id: browsers-others
+                        aggregations:
                             others:
                                 type: terms
-                                field: othertools_browsers.other
+                                field: othertools_browsers_other.value
+                                size: 10
                 - section: environments
                   dest: environments
                   items:
@@ -815,8 +851,16 @@ surveys:
                             environments:
                                 type: terms
                                 field: environments_formfactors.value
-                      # "environments_cssforprint": {
-                      # "environments_cssforemailclients": {
+                      - id: print-styles
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: environments_cssforprint.value
+                      - id: email-styles
+                        aggregations:
+                            usage:
+                                type: terms
+                                field: environments_cssforemailclients.value
                 - section: resources
                   dest: learning-resources
                   items:
@@ -1001,6 +1045,26 @@ dictionaries:
         - id: back_end_dev
           label: Back-end Developer/Engineer
 
+    css_for_print:
+        - id: never
+          label: I (almost) never write print styles
+        - id: occasionally
+          label: I occasionally write print styles
+        - id: often
+          label: I write print styles as part of most projects
+        - id: mainly
+          label: I focus mainly on CSS for print
+
+    css_for_email_clients:
+        - id: never
+          label: I (almost) never write CSS for email clients
+        - id: occasionally
+          label: I occasionally write CSS for email clients
+        - id: often
+          label: I write CSS for email clients as part of most projects
+        - id: mainly
+          label: I focus mainly on CSS for email clients
+
 ###############################################################################
 #
 #  Normalizations
@@ -1135,15 +1199,15 @@ normalizations:
         - match: /\/?r\/(javascript|clojure|reactjs|angular|webdev|programming|web_design)/i
           replace: reddit
         - match: /hacker.*news/i
-          replace: Hacker news
+          replace: hn
         - match: /hacknews/i
-          replace: Hacker news
+          replace: hn
         - match: /hckrnews/i
-          replace: Hacker news
+          replace: hn
         - match: /^hn$/i
-          replace: Hacker news
+          replace: hn
         - match: /ycombinator/i
-          replace: Hacker news
+          replace: hn
         - match: /med(iu|ui)m/i
           replace: Medium
         - match: /css.*tricks?/i
@@ -1175,7 +1239,7 @@ normalizations:
         - match: /wes barracuda bos/i
           replace: Wes Bos
         - match: /sidebar/i
-          replace: sidebar.io
+          replace: sidebar
         - match: /mu(z|s)(li|il)/i
           replace: Muzli
         - match: /css.*layout.*news/i
@@ -1286,3 +1350,92 @@ normalizations:
           replace: Tanzania
         - match: /United Kingdom of Great Britain and Northern Ireland/i
           replace: UK
+
+    text_editors:
+        - match: /notepad/i
+          replace: Notepad++
+        - match: /brac?(k|h)ets?/i
+          replace: Brackets
+        - match: /php ?storm/i
+          replace: PHPStorm
+        - match: /coda/i
+          replace: Coda
+        - match: /dree?a(n|m)we?aver/i
+          replace: Dreamweaver
+        - match: /intellij/i
+          replace: Intellij
+        - match: /idea/i
+          replace: Intellij
+        - match: /nano/i
+          replace: Nano
+        - match: /textmate/i
+          replace: TextMate
+        - match: /bbedit/i
+          replace: BBEdit
+        - match: /netbeans/i
+          replace: Netbeans
+        - match: /eclipse/i
+          replace: Eclipse
+        - match: /neovim/i
+          replace: Neovim
+        - match: /pycharm/i
+          replace: PyCharm
+        - match: /rubymine/i
+          replace: RubyMine
+        - match: /gedit/i
+          replace: gedit
+        - match: /text ?wrangler/i
+          replace: TextWrangler
+        - match: /cloud9/i
+          replace: Cloud9
+        - match: /c9/i
+          replace: Cloud9
+        - match: /geany/i
+          replace: Geany
+        - match: /kate/i
+          replace: Kate
+        - match: /kakoune/i
+          replace: Kakoune
+        - match: /aptana/i
+          replace: Aptana
+        - match: /visual ?studio ?code/i
+          replace: Visual Studio Code
+        - match: /visual ?studio/i
+          replace: Visual Studio
+        - match: /^vs$/i
+          replace: Visual Studio
+        - match: /komodo/i
+          replace: Komodo
+        - match: /pico/i
+          replace: Pico
+
+    browsers:
+        - match: /opera/i
+          replace: Opera
+        - match: /brave/i
+          replace: Brave
+        - match: /vivaldi/i
+          replace: Vivaldi
+        - match: /chromium/i
+          replace: Chromium
+        # technically chrome canary is build from chromium
+        - match: /canary/i
+          replace: Chromium
+        - match: /yandex/i
+          replace: Yandex
+        - match: /firefox.*dev(eloper)?/i
+          replace: Firefox Developers edition
+        - match: /ie ?11/i
+          replace: Internet Explorer 11
+        - match: /internet ?explorer ?11/i
+          replace: Internet Explorer 11
+        - match: /msie 11/i
+          replace: Internet Explorer 11
+        - match: /^ie$/i
+          replace: Internet Explorer
+        - match: /internet ?explorer/i
+          replace: Internet Explorer
+        - match: /uc ?browser/i
+          replace: UC Browser
+        - match: /samsung/i
+          replace: Samsung

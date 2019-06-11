@@ -59,7 +59,11 @@ export const createElasticsearchLoader = (
         })
 
         if (res.errors === true) {
-            console.error(res.items.map((i: any) => i.index.error))
+            // console.error(require('util').inspect(res, { depth: null }))
+            // console.error(res.items.map((i: any) => i.index.error))
+            const failed = res.items.filter((i: any) => i.index.result !== 'created')
+            console.error(require('util').inspect(failed, { depth: null }))
+
             throw new Error(`an error occurred while loading results`)
         }
 
