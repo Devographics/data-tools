@@ -4,6 +4,9 @@ export interface CleanupConfig {
     fields: string[]
 }
 
+/**
+ * Defines value which should be considered as undefined
+ */
 const emptyValues = [
     '',
     '\n',
@@ -22,8 +25,10 @@ const emptyValues = [
     'na',
     'None',
     'none',
+    'NONE',
     'Nope',
     'nope',
+    'Nothing',
     'no',
     'No',
     'NO',
@@ -43,6 +48,10 @@ const emptyValues = [
     'meh'
 ]
 
+/**
+ * This transformer removes values which should
+ * be considered as undefined.
+ */
 export const createCleanupTransformer = (options: CleanupConfig) => {
     return {
         transform: (data: any[]) => {

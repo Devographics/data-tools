@@ -41,10 +41,8 @@ export const runTermsSubFilterAggregation = async (
                 term: {
                     'releaseId.keyword': release
                 }
-            },
-            {
-                exists: { field }
             }
+            // { exists: { field } }
         ]
     }
     if (config.must !== undefined) {

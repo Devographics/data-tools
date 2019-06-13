@@ -12,9 +12,16 @@ export interface TermsAggregationConfig {
     must?: BoolQueryCondition[]
 }
 
-export const mapTermsAggregation = (agg: RawAggregation, total: number) => {
+export const mapTermsAggregation = (agg: RawAggregation, total: number, missing: number) => {
+    const completion = total - missing
+    const completionPercentage = Number(((completion / total) * 100).toFixed(2))
+
     const mapped = {
         total,
+        completion: {
+            count: completion,
+            percentage: completionPercentage
+        },
         others_count: agg.sum_other_doc_count as number,
         buckets: agg.buckets.map((bucket: any) => ({
             id: `${bucket.key}`,
@@ -41,10 +48,8 @@ export const runTermsAggregation = async (
                 term: {
                     'releaseId.keyword': release
                 }
-            },
-            {
-                exists: { field }
             }
+            // { exists: { field } }
         ]
     }
     if (config.must !== undefined) {
@@ -64,6 +69,11 @@ export const runTermsAggregation = async (
                         field,
                         size: config.size || 20
                     }
+                },
+                missing: {
+                    missing: {
+                        field
+                    }
                 }
             }
         }
@@ -74,22 +84,11 @@ export const runTermsAggregation = async (
     if (agg.doc_count_error_upper_bound > 0) {
         console.warn(`> terms aggregation contains ${agg.doc_count_error_upper_bound} error(s)`)
     }
-
-    const mappedAggregation = mapTermsAggregation(agg, res.hits.total)
-
-    if (config.field === 'units_selectors_formcontrols.value') {
-        console.log(require('util').inspect(config, { depth: null, colors: true }))
-        console.log(require('util').inspect(params, { depth: null, colors: true }))
-        console.log(require('util').inspect(res, { depth: null, colors: true }))
-        console.log(require('util').inspect(agg, { depth: null, colors: true }))
-        console.log(require('util').inspect(mappedAggregation, { depth: null, colors: true }))
-        console.log(
-            require('util').inspect(
-                computeBucketsPercentages(mappedAggregation.buckets, mappedAggregation.total),
-                { depth: null, colors: true }
-            )
-        )
-    }
+    const mappedAggregation = mapTermsAggregation(
+        agg,
+        res.hits.total,
+        res.aggregations.missing.doc_count
+    )
 
     return {
         ...mappedAggregation,

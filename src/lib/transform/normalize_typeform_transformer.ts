@@ -33,7 +33,6 @@ export const createNormalizeTypeFormTransformer = (options: { fields: string[] }
             }
             mapped = data.answers.reduce((acc: any, answer: any) => {
                 const id = slugify(answer.field.ref)
-                const fieldId = answer.field.id
 
                 let value
                 let other
@@ -52,16 +51,11 @@ export const createNormalizeTypeFormTransformer = (options: { fields: string[] }
                     throw new Error(`unknown answer type: ${answer.type}`)
                 }
 
-                acc.push({
-                    id,
-                    // fieldId,
-                    value
-                })
+                acc.push({ id, value })
 
                 if (other !== undefined) {
                     acc.push({
                         id: `${id}_other`,
-                        // fieldId,
                         value: other
                     })
                 }

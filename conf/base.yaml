@@ -57,6 +57,7 @@ surveys:
           - id: '2019'
             typeform_id: TxDuh6
             transformers:
+                # MUST run BEFORE all other transformers
                 - type: normalize_typeform
                 - type: cleanup
                   config:
@@ -71,19 +72,22 @@ surveys:
                           - aboutyou_howdidyoufindoutaboutthissurvey
                           - hidden__source
                           - opinionquestions_whatdoyoufeeliscurrentlymissingfromcss
-                # - type: normalize
-                #   config:
-                #       normalization: countries
-                #       fields:
-                #           - aboutyou_yourcountry
-                # - type: geo
-                #   config:
-                #       field: aboutyou_yourcountry
-                # - type: normalize
-                #   config:
-                #       normalization: countries_post
-                #       fields:
-                #           - aboutyou_yourcountry
+                          - resources_blogs_magazines_other
+                          - resources_sites_courses_other
+                          - resources_podcasts_other
+                - type: normalize
+                  config:
+                      normalization: countries
+                      fields:
+                          - aboutyou_yourcountry
+                - type: geo
+                  config:
+                      field: aboutyou_yourcountry
+                - type: normalize
+                  config:
+                      normalization: countries_post
+                      fields:
+                          - aboutyou_yourcountry
                 - type: normalize
                   config:
                       normalization: text_editors
@@ -218,16 +222,29 @@ surveys:
                           - opinionquestions_whatdoyoufeeliscurrentlymissingfromcss
                 - type: normalize
                   config:
+                      normalization: resources
+                      fields:
+                          - resources_blogs_magazines_other
+                          - resources_sites_courses_other
+                          - resources_podcasts_other
+                - type: normalize
+                  config:
                       normalization: sources
                       fields:
                           - aboutyou_howdidyoufindoutaboutthissurvey
                 - type: source
                   config:
-                      normalization: sources
                       fields:
                           - hidden__source
                           - aboutyou_howdidyoufindoutaboutthissurvey
                       fieldName: survey_source
+                      emptyValue: not_available
+                - type: normalize
+                  config:
+                      normalization: sources_post
+                      fields:
+                          - survey_source
+                # MUST run AFTER all other transformers
                 - type: to_object
             sections:
                 - id: FEATURES
@@ -286,7 +303,7 @@ surveys:
                             breakdown:
                                 type: terms
                                 field: survey_source.value
-                                size: 30
+                                size: 18
                 - section: layout
                   dest: features_usage
                   items:
@@ -847,7 +864,7 @@ surveys:
                 - section: environments
                   dest: environments
                   items:
-                      - id: browsers
+                      - id: env-browsers
                         aggregations:
                             environments:
                                 type: terms
@@ -875,16 +892,34 @@ surveys:
                             resources:
                                 type: terms
                                 field: resources_blogs_magazines.value
+                      - id: blogs-magazines-others
+                        aggregations:
+                            others:
+                                type: terms
+                                field: resources_blogs_magazines_other.value
+                                size: 17
                       - id: sites-courses
                         aggregations:
                             resources:
                                 type: terms
                                 field: resources_sites_courses.value
+                      - id: sites-courses-others
+                        aggregations:
+                            others:
+                                type: terms
+                                field: resources_sites_courses_other.value
+                                size: 20
                       - id: podcasts
                         aggregations:
                             resources:
                                 type: terms
                                 field: resources_podcasts.value
+                      - id: podcasts-others
+                        aggregations:
+                            others:
+                                type: terms
+                                field: resources_podcasts_other.value
+                                size: 14
                 - section: opinions
                   dest: opinions
                   items:
@@ -1161,6 +1196,10 @@ normalizations:
         - match: /^styled.*system$/i
           replace: styled-system
 
+    # - on pourrait virer hangouts/chat/medium
+    # - ça serait cool de regrouper tout le reste en `other`
+    # - et aussi d’avoir une barre pour “not available”
+
     sources:
         - match: /tw(i|e)(i|e)?t/i, 'twitter'],
           replace: twitter
@@ -1188,17 +1227,17 @@ normalizations:
         - match: /stateofcss/i
           replace: stateofcss
         - match: /designer.*news/i
-          replace: Designer News
+          replace: designernews
         - match: /front.*end.*focus/i
-          replace: Frontend Focus
+          replace: frontend_focus
         - match: /front.*end.*front/i
-          replace: Front-End Front
+          replace: front_end_front
         - match: /one.*page.*love/i
-          replace: One Page Love
+          replace: one_page_love
         - match: /(wp|wordpress).*tavern/i
-          replace: WordPress Tavern
+          replace: wordpress_tavern
         - match: /free.*code.*camp/i
-          replace: freeCodeCamp
+          replace: freecodecamp
         - match: /redd?it/i
           replace: reddit
         - match: /r3dd1t/i
@@ -1216,13 +1255,13 @@ normalizations:
         - match: /ycombinator/i
           replace: hn
         - match: /med(iu|ui)m/i
-          replace: Medium
+          replace: medium
         - match: /css.*tricks?/i
-          replace: CSS Tricks
+          replace: csstricks
         - match: /responsive.*design.*weekly/i
-          replace: Responsive Design Weekly
-        - match: /rdw/i
-          replace: Responsive Design Weekly
+          replace: responsive_design_weekly
+        - match: /rwd/i
+          replace: responsive_design_weekly
         - match: /work/i
           replace: work
         - match: /cto/i
@@ -1238,43 +1277,51 @@ normalizations:
         - match: /team ?mate/i
           replace: work
         - match: /we(s|b) ?br?o(s|z)/i
-          replace: Wes Bos
+          replace: wesbos
         - match: /wes the bos/i
-          replace: Wes Bos
+          replace: wesbos
         - match: /^wes$/i
-          replace: Wes Bos
+          replace: wesbos
         - match: /wes barracuda bos/i
-          replace: Wes Bos
+          replace: wesbos
         - match: /sidebar/i
           replace: sidebar
         - match: /mu(z|s)(li|il)/i
-          replace: Muzli
+          replace: muzli
         - match: /css.*layout.*news/i
-          replace: CSS Layout News
+          replace: css_layout_news
         - match: /css.*weekly/i
-          replace: CSS Weekly
+          replace: css_weekly
         - match: /smashing/i
-          replace: Smashing Magazine
-        - match: /codrops/i
-          replace: Codrops
-        - match: /codedrops/i
-          replace: Codrops
-        - match: /tympanus/i
-          replace: Codrops
-        - match: /facebook/i
-          replace: facebook
-        - match: /fb/i
+          replace: smashing_magazine
+        - match: /(codedrops|codrops|tympanus)/i
+          replace: codrops
+        - match: /(facebook|fb)/i
           replace: facebook
         - match: /slack/i
-          replace: Slack
+          replace: slack
         - match: /telegram/i
-          replace: Telegram
+          replace: telegram
         - match: /friends?/i
           replace: friend
         - match: /slashdot/i
           replace: slashdot
         - match: /newsletter/i
-          replace: Newsletter
+          replace: newsletter
+        - match: /discord/i
+          replace: discord
+
+    sources_post:
+        - match: /csstricks/
+          replace: csstricks
+        - match: /sidebar/
+          replace: sidebar
+        - match: /(rwebdev|rweb_design)/i
+          replace: reddit
+        - match: /(work|friend|hangouts|slack|chat)/i
+          replace: word_of_mouth
+        - match: /(email|newsletter)/i
+          replace: stateofjs
 
     countries:
         - match: /^united statess?$/i
@@ -1483,3 +1530,92 @@ normalizations:
         - match: /consistency/i
           replace: Browser Support
 
+    resources:
+        - match: /web.*standar(d|t)s/i
+          replace: web_standards
+        - match: /developer *tea/i
+          replace: developer_tea
+        - match: /working *draft/i
+          replace: working_draft
+        - match: /http *203/i
+          replace: http_203
+        - match: /front *end *happy *hour/i
+          replace: front_end_happy_hour
+        - match: /the *web *platform/i
+          replace: the_web_platform
+        - match: /a *responsive *web *design/i
+          replace: a_responsive_web_design
+        - match: /toolsday/i
+          replace: toolsday
+        - match: /can *i *use/i
+          replace: caniuse
+        - match: /scrimba/i
+          replace: scrimba
+        - match: /udemy/i
+          replace: udemy
+        - match: /egghead/i
+          replace: egghead
+        - match: /css.*tricks/i
+          replace: csstricks
+        - match: /front.?end *masters?/i
+          replace: front_end_masters
+        - match: /lynda/i
+          replace: lynda
+        - match: /codepen/i
+          replace: codepen
+        - match: /platzi/i
+          replace: platzi
+        - match: /super *hi/i
+          replace: superhi
+        - match: /treehouse/i
+          replace: treehouse
+        - match: /medium/i
+          replace: medium
+        - match: /mdn/i
+          replace: mdn
+        - match: /stack *overflow/i
+          replace: stackoverflow
+        - match: /google/i
+          replace: google
+        - match: /alligator/i
+          replace: alligator
+        - match: /w3school/i
+          replace: w3schools
+        - match: /sidebar/i
+          replace: sidebar
+        - match: /twitter/i
+          replace: twitter
+        - match: /css *wizardry/i
+          replace: css_wizardry
+        - match: /css *weekly/i
+          replace: css_weekly
+        - match: /dev\.to/i
+          replace: devto
+        - match: /reddit/i
+          replace: reddit
+        - match: /css *layout.*news/i
+          replace: css_layout_news
+        - match: /code ?newbie/i
+          replace: code_newbie
+        - match: /Веб-стандарты/i
+          replace: web_standards_ru
+        - match: /mozilla/i
+          replace: mdn
+        - match: /frontend.?focus/i
+          replace: frontend_focus
+        - match: /youtube/i
+          replace: youtube
+        - match: /udacity/i
+          replace: udacity
+        - match: /traversy/i
+          replace: traversy_media
+        - match: /flexbox.?zomb/i
+          replace: flexbox_zombies
+        - match: /full.?stack.?radio/i
+          replace: fullstack_radio
+        - match: /react.?podcast/i
+          replace: react_podcast
+        - match: /software.?engineering/i
+          replace: software_engineering
+        - match: /devdocs/i
+          replace: devdocs
