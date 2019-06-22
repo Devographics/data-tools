@@ -897,7 +897,7 @@ surveys:
                             others:
                                 type: terms
                                 field: resources_blogs_magazines_other.value
-                                size: 17
+                                size: 5
                       - id: sites-courses
                         aggregations:
                             resources:
@@ -908,7 +908,7 @@ surveys:
                             others:
                                 type: terms
                                 field: resources_sites_courses_other.value
-                                size: 20
+                                size: 5
                       - id: podcasts
                         aggregations:
                             resources:
@@ -919,7 +919,7 @@ surveys:
                             others:
                                 type: terms
                                 field: resources_podcasts_other.value
-                                size: 14
+                                size: 5
                 - section: opinions
                   dest: opinions
                   items:

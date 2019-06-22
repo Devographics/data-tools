@@ -4,6 +4,10 @@
   "main": "index.js",
   "author": "Raphaël Benitte <raphael.benitte@ekino.com>",
   "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "engineStrict": true,
   "dependencies": {
     "@ekino/config": "git+https://github.com/ekino/node-config.git#c315b9d44476e0ca71c711202ed2c4870b10b011",
     "@ekino/logger": "git+https://github.com/ekino/node-logger.git#3b470fab9de160c098665f3aceab220fff5a4711",
