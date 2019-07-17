@@ -362,6 +362,18 @@ surveys:
                                 filter:
                                     term:
                                         layout_cssexclusions.value.keyword: used_it
+                      - id: layout-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: used_it
+                                items:
+                                    - { id: css-grid, field: layout_cssgrid }
+                                    - { id: flexbox, field: layout_flexbox }
+                                    - { id: css-multi-column, field: layout_cssmulticolumn }
+                                    - { id: css-writing-modes, field: layout_csswritingmodes }
+                                    - { id: css-exclusions, field: layout_cssexclusions }
                 - section: shapes-and-graphics
                   dest: features_usage
                   items:
@@ -420,7 +432,6 @@ surveys:
                                 filter:
                                     term:
                                         shapes_graphics_blendmodes.value.keyword: used_it
-
                       - id: css-filter-effects
                         aggregations:
                             usage:
@@ -432,6 +443,19 @@ surveys:
                                 filter:
                                     term:
                                         shapes_graphics_cssfiltereffects.value.keyword: used_it
+                      - id: shapes-and-graphics-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: used_it
+                                items:
+                                    - { id: css-shapes, field: shapes_graphics_cssshapes }
+                                    - { id: object-fit, field: shapes_graphics_objectfit }
+                                    - { id: clip-path, field: shapes_graphics_clippath }
+                                    - { id: css-masks, field: shapes_graphics_cssmasks }
+                                    - { id: blend-modes, field: shapes_graphics_blendmodes }
+                                    - { id: css-filter-effects, field: shapes_graphics_cssfiltereffects }
                 - section: interactions
                   dest: features_usage
                   items:
@@ -468,6 +492,16 @@ surveys:
                                 filter:
                                     term:
                                         interactions_overflowanchor.value.keyword: used_it
+                      - id: interactions-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: used_it
+                                items:
+                                    - { id: css-scroll-snap, field: interactions_cssscrollsnap }
+                                    - { id: overscroll-behavior, field: interactions_overscrollbehavior }
+                                    - { id: overflow-anchor, field: interactions_overflowanchor }
                 - section: typography
                   dest: features_usage
                   items:
@@ -526,6 +560,18 @@ surveys:
                                 filter:
                                     term:
                                         typography_initialletter.value.keyword: used_it
+                      - id: typography-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: used_it
+                                items:
+                                    - { id: web-fonts-font-face, field: typography_webfonts_fontface }
+                                    - { id: variable-fonts, field: typography_variablefonts }
+                                    - { id: line-breaking-properties, field: typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens }
+                                    - { id: font-variant, field: typography_fontvariant }
+                                    - { id: initial-letter, field: typography_initialletter }
                 - section: animations-and-transforms
                   dest: features_usage
                   items:
@@ -562,6 +608,16 @@ surveys:
                                 filter:
                                     term:
                                         animations_transforms_cssanimations.value.keyword: used_it
+                      - id: animations-and-transforms-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: used_it
+                                items:
+                                    - { id: css-transitions, field: animations_transforms_csstransitions }
+                                    - { id: css-transforms, field: animations_transforms_csstransforms }
+                                    - { id: css-animations, field: animations_transforms_cssanimations }
                 - section: other-features
                   dest: features_usage
                   items:
@@ -620,6 +676,18 @@ surveys:
                                 filter:
                                     term:
                                         otherfeatures_calc.value.keyword: used_it
+                      - id: other-features-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: used_it
+                                items:
+                                    - { id: css-variables, field: otherfeatures_cssvariables }
+                                    - { id: support-queries, field: otherfeatures_featuresupportqueries_supports }
+                                    - { id: css-containment, field: otherfeatures_csscontainment }
+                                    - { id: will-change, field: otherfeatures_willchange }
+                                    - { id: calc, field: otherfeatures_calc }
                 - section: units-and-selectors
                   dest: units-and-selectors
                   items:
@@ -692,6 +760,28 @@ surveys:
                                 type: terms
                                 field: pre_postprocessors_other_other.value
                                 size: 50
+                      - id: pre-post-processors-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: sass, field: pre_postprocessors_sass }
+                                    - { id: less, field: pre_postprocessors_less }
+                                    - { id: postcss, field: pre_postprocessors_postcss }
+                                    - { id: stylus, field: pre_postprocessors_stylus }
+                      - id: pre-post-processors-salary-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearlysalary
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: sass, field: pre_postprocessors_sass }
+                                    - { id: less, field: pre_postprocessors_less }
+                                    - { id: postcss, field: pre_postprocessors_postcss }
+                                    - { id: stylus, field: pre_postprocessors_stylus }
                 - section: css-frameworks
                   dest: tools
                   items:
@@ -755,6 +845,42 @@ surveys:
                             others:
                                 type: terms
                                 field: cssframeworks_other_other.value
+                      - id: css-frameworks-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: bootstrap, field: cssframeworks_bootstrap }
+                                    - { id: materialize-css, field: cssframeworks_materializecss }
+                                    - { id: ant-design, field: cssframeworks_antdesign }
+                                    - { id: semantic-ui, field: cssframeworks_semanticui }
+                                    - { id: bulma, field: cssframeworks_bulma }
+                                    - { id: foundation, field: cssframeworks_foundation }
+                                    - { id: uikit, field: cssframeworks_uikit }
+                                    - { id: tachyons, field: cssframeworks_tachyons }
+                                    - { id: primer, field: cssframeworks_primer }
+                                    - { id: tailwind, field: cssframeworks_tailwind }
+                                    - { id: purecss, field: cssframeworks_purecss }
+                      - id: css-frameworks-salary-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearlysalary
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: bootstrap, field: cssframeworks_bootstrap }
+                                    - { id: materialize-css, field: cssframeworks_materializecss }
+                                    - { id: ant-design, field: cssframeworks_antdesign }
+                                    - { id: semantic-ui, field: cssframeworks_semanticui }
+                                    - { id: bulma, field: cssframeworks_bulma }
+                                    - { id: foundation, field: cssframeworks_foundation }
+                                    - { id: uikit, field: cssframeworks_uikit }
+                                    - { id: tachyons, field: cssframeworks_tachyons }
+                                    - { id: primer, field: cssframeworks_primer }
+                                    - { id: tailwind, field: cssframeworks_tailwind }
+                                    - { id: purecss, field: cssframeworks_purecss }
                 - section: methodologies
                   dest: tools
                   items:
@@ -788,6 +914,30 @@ surveys:
                             others:
                                 type: terms
                                 field: methodologies_other_other.value
+                      - id: methodologies-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: bem, field: methodologies_bem }
+                                    - { id: atomic-css, field: methodologies_atomiccss }
+                                    - { id: oocss, field: methodologies_oocss }
+                                    - { id: smacss, field: methodologies_smacss }
+                                    - { id: it-css, field: methodologies_itcss }
+                      - id: methodologies-salary-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearlysalary
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: bem, field: methodologies_bem }
+                                    - { id: atomic-css, field: methodologies_atomiccss }
+                                    - { id: oocss, field: methodologies_oocss }
+                                    - { id: smacss, field: methodologies_smacss }
+                                    - { id: it-css, field: methodologies_itcss }
                 - section: css-in-js
                   dest: tools
                   items:
@@ -836,6 +986,36 @@ surveys:
                             others:
                                 type: terms
                                 field: cssinjs_other_other.value
+                      - id: css-in-js-experience-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearsofexperience
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: styled-components, field: cssinjs_styledcomponents }
+                                    - { id: glamor, field: cssinjs_glamor }
+                                    - { id: aphrodite, field: cssinjs_aphrodite }
+                                    - { id: jss, field: cssinjs_jss }
+                                    - { id: styled-jsx, field: cssinjs_styledjsx }
+                                    - { id: radium, field: cssinjs_radium }
+                                    - { id: emotion, field: cssinjs_emotion }
+                                    - { id: css-modules, field: cssinjs_cssmodules }
+                      - id: css-in-js-salary-heatmap
+                        aggregations:
+                            heatmap:
+                                type: heatmap
+                                field: aboutyou_yearlysalary
+                                condition: would_use would_not_use
+                                items:
+                                    - { id: styled-components, field: cssinjs_styledcomponents }
+                                    - { id: glamor, field: cssinjs_glamor }
+                                    - { id: aphrodite, field: cssinjs_aphrodite }
+                                    - { id: jss, field: cssinjs_jss }
+                                    - { id: styled-jsx, field: cssinjs_styledjsx }
+                                    - { id: radium, field: cssinjs_radium }
+                                    - { id: emotion, field: cssinjs_emotion }
+                                    - { id: css-modules, field: cssinjs_cssmodules }
                 - section: other-tools
                   dest: other-tools
                   items:
@@ -1619,3 +1799,36 @@ normalizations:
           replace: software_engineering
         - match: /devdocs/i
           replace: devdocs
+
+lists:
+    tool_fields: []
+    feature_fields:
+        - layout_cssgrid
+        - layout_flexbox
+        - layout_cssmulticolumn
+        - layout_csswritingmodes
+        - layout_cssexclusions
+        - shapes_graphics_cssshapes
+        - shapes_graphics_objectfit
+        - shapes_graphics_clippath
+        - shapes_graphics_cssmasks
+        - shapes_graphics_blendmodes
+        - shapes_graphics_cssfiltereffects
+        - interactions_cssscrollsnap
+        - interactions_overscrollbehavior
+        - interactions_overflowanchor
+        - typography_webfonts_fontface
+        - typography_variablefonts
+        - typography_linebreakingproperties_overflowwrap_wordbreak_linebreak_hyphens
+        - typography_fontvariant
+        - typography_initialletter
+        - animations_transforms_csstransitions
+        - animations_transforms_csstransforms
+        - animations_transforms_cssanimations
+        - otherfeatures_cssvariables
+        - otherfeatures_featuresupportqueries_supports
+        - otherfeatures_csscontainment
+        - otherfeatures_willchange
+        - otherfeatures_calc
+
+    resource_fields: []

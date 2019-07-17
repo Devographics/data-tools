@@ -3,8 +3,12 @@ import {
     TermsSubFilterAggregationConfig,
     runTermsSubFilterAggregation
 } from './terms_sub_filter_aggregation'
+import { HeatmapAggregationConfig, runHeatmapAggregation } from './heatmap_aggregation'
 
-export type AggregationConfig = TermsAggregationConfig | TermsSubFilterAggregationConfig
+export type AggregationConfig =
+    | TermsAggregationConfig
+    | TermsSubFilterAggregationConfig
+    | HeatmapAggregationConfig
 
 export interface SectionItemConfig {
     id: string
@@ -59,6 +63,8 @@ export const runAggregations = async (
                     res = await runTermsAggregation(survey, release, agg)
                 } else if (agg.type === 'terms_sub_filter') {
                     res = await runTermsSubFilterAggregation(survey, release, agg)
+                } else if (agg.type === 'heatmap') {
+                    res = await runHeatmapAggregation(survey, release, agg)
                 }
 
                 itemAggregations[aggId] = res
